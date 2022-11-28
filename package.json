@@ -1,0 +1,12 @@
+{
+  "name": "Bus-Error",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/itsalicelee/Bus-Error",
+  "author": "Alice <alice668149@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+      "frontend": "cd ./frontend && yarn start",
+      "backend": "cd ./backend && yarn server"
+  }
+}
