@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-
+import routes from './routes';
 
 require('dotenv').config();
 const app = express();
@@ -31,9 +31,13 @@ if (!process.env.MONGO_URL) {
         useNewUrlParser: true,
     });
 }
-
-// routes(app);
-
-app.listen(port, () => {
-    console.log(`Server is up on port ${port}.`);
+const db = mongoose.connection;
+db.on('error', (error) => {
+    throw new Error('Mongoose connection error ' + error);
+});
+db.once('open', () => {
+    routes(app);
+    app.listen(port, () => {
+        console.log(`Server is up on port ${port}.`);
+    });
 });
