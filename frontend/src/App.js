@@ -5,8 +5,8 @@ import MyHeader from './components/MyHeader';
 function App() {
     return (
         <>
-            <MyMenu />
             <MyHeader />
+            <MyMenu />
         </>
     );
 }
