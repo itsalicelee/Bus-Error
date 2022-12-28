@@ -12,8 +12,9 @@ const PostSchema = Schema(
         content: { type: String, required: true },
 
         /* Not Required */
+        likes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+        dislikes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
         comment: [{ type: mongoose.Types.ObjectId, ref: 'Comment' }],
-        rating: { type: Number },
         views: { type: Number },
     },
     {

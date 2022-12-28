@@ -18,4 +18,31 @@ exports.CreateComment = async (req, res) => {
     }
 };
 
-exports.UpdateComment = async (req, res) => {};
+exports.UpdateComment = async (req, res) => {
+    const body = req.body;
+    const { id, content, postId } = body;
+
+    try {
+        const comment = await Comment.findOneAndUpdate(
+            { id: id },
+            {
+                $set: {
+                    content: content,
+                },
+            }
+        );
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.DeleteComment = async (req, res) => {
+    const body = req.body;
+    const { id, postId } = body;
+
+    try {
+        const comment = await Comment.deleteOne({ id: id });
+    } catch (err) {
+        console.log(err);
+    }
+};
