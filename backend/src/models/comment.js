@@ -13,8 +13,8 @@ const CommentSchema = Schema(
         /* Not Required */
         parentId: { type: mongoose.Types.ObjectId, required: true, ref: 'Comment' },
         adopted: { type: Boolean },
-        likes: { type: Number },
-        dislikes: { type: Number },
+        likes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+        dislikes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     },
     {
         collection: 'Comment',
