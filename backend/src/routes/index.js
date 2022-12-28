@@ -18,6 +18,8 @@ function main(app) {
     /* Comment Route */
     app.post('/api/v1/createComment', wrap(commentRoute.CreateComment));
     app.get('/api/v1/updateComment', wrap(commentRoute.UpdateComment));
+    app.get('/api/v1/deleteComment', wrap(commentRoute.DeleteComment));
+    
 }
 
 export default main;
