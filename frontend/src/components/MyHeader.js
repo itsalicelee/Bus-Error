@@ -5,20 +5,35 @@ import styled from 'styled-components';
 
 const { Title } = Typography;
 
+// components
 const Header = styled.header`
     display: flex;
     height: 64px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 16px 16px;
     justify-content: center;
 }`;
 
 const Container = styled.div`
     display: flex;
+    flex: 1;
+    flex-shrink: 0;
+    justify-content: right;
 }`;
 
+// style
 const inputStyle = {
-    width: '500px',
-    margin: '0 240px',
+    maxWidth: '500px',
+    flex: 1,
+};
+
+const titleStyle = {
+    width: '220px',
+    flex: 1,
+    flexShrink: 0,
+    alignItem: 'left',
 };
 
 const buttonStyle = {
@@ -29,7 +44,7 @@ const buttonStyle = {
 function MyHeader() {
     return (
         <Header>
-            <Title level={3} style={{ width: '220px' }}>Bus Error</Title>
+            <Title level={3} style={titleStyle}>Bus Error</Title>
             <Input style={inputStyle} placeholder="搜尋" />
             <Container>
                 <Button type="text">問題</Button>
