@@ -4,8 +4,9 @@ import styled from 'styled-components';
 
 const Wrapper = styled(Menu)`
     .ant-menu-item-selected {
-        background-color: #FFF1B8 !important;
+        background-color: #FCF4E0 !important;
         color: #FAAD14;
+        font-weight: 700;
     }
 }`;
 
@@ -25,7 +26,7 @@ const popularTags = [
 
 function MyMenu() {
     return (
-        <>
+        <div>
             <Wrapper
                 items={followingTags}
                 style={{ width: 224 }}
@@ -41,7 +42,7 @@ function MyMenu() {
                 defaultOpenKeys={['sub1']}
                 mode="inline"
             />
-        </>
+        </div>
     );
 }
 
