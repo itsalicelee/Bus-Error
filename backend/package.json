@@ -21,6 +21,7 @@
     "@babel/preset-env": "^7.20.2"
   },
   "scripts": {
-    "server": "nodemon src/server.js --ext js --exec babel-node"
+    "server": "nodemon src/server.js --ext js --exec babel-node",
+    "deploy": "NODE_ENV=production babel-node src/server.js"
   }
 }
