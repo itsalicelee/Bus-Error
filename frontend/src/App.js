@@ -13,7 +13,9 @@ function App() {
     return (
         <ConfigProvider
             theme={{
-                token: { colorPrimary: gold.primary },
+                token: {
+                    colorPrimary: gold.primary,
+                },
                 algorithm: colorAlgorithm,
             }}
         >

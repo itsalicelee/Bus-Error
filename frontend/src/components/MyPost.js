@@ -23,7 +23,6 @@ const DataContainer = styled.div`
     }
     div h2 {
         margin-bottom: 0;
-        color: #141414;
     }
     div p {
         white-space: nowrap;
@@ -42,7 +41,6 @@ const ContentContainer = styled.div`
     h2 {
         font-size: 18px;
         font-weight: 700;
-        color: #141414;
     }
     p {
         font-size: 14px;

@@ -15,7 +15,6 @@ const modalStyle = {
 
 const titleStyle = {
     textAlign: 'center',
-    color: '#141414',
     fontweight: 700,
     marginBottom: '8px',
 };
