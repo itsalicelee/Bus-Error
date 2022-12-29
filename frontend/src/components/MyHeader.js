@@ -38,7 +38,6 @@ const titleStyle = {
 };
 
 const buttonStyle = {
-    background: '#FAAD14',
     borderRadius: '16px',
 };
 

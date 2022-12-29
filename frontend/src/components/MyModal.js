@@ -6,22 +6,6 @@ import PropTypes from 'prop-types';
 // components
 const MyTabs = styled(Tabs)`
     flex: 1;
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-        color: #FAAD14 !important;
-    }
-
-    .ant-tabs-tab.ant-tabs-tab-active {
-        border-bottom: 2px solid #FAAD14 !important;
-        z-index: 2;
-    }
-
-    .ant-tabs-ink-bar {
-        background-color: #FAAD00;
-    }
-
-    .ant-tabs-tab-btn:hover, .ant-tabs-tab:hover {
-        color: #FAAD14 !important;
-    }
 `;
 
 // style
@@ -44,7 +28,6 @@ const inputStyle = {
 
 const buttonStyle = {
     width: '100%',
-    background: '#FAAD14',
     textAlign: 'center',
     marginBottom: '28px',
 };

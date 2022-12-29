@@ -6,7 +6,6 @@ const Container = styled(Menu)`
     background-color: #FAFAFA;
     .ant-menu-item-selected {
         background-color: #FCF4E0 !important;
-        color: #FAAD14;
         font-weight: 700;
     }
 }`;

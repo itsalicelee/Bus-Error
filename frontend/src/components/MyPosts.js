@@ -16,22 +16,6 @@ const Container = styled.div`
 
 const MyTabs = styled(Tabs)`
     flex: 1;
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-        color: #FAAD14 !important;
-    }
-
-    .ant-tabs-tab.ant-tabs-tab-active {
-        border-bottom: 2px solid #FAAD14 !important;
-        z-index: 2;
-    }
-
-    .ant-tabs-ink-bar {
-        background-color: #FAAD00;
-    }
-
-    .ant-tabs-tab-btn:hover, .ant-tabs-tab:hover {
-        color: #FAAD14 !important;
-    }
 `;
 
 const MyPagination = styled(Pagination)`
@@ -40,16 +24,6 @@ const MyPagination = styled(Pagination)`
     border-radius: 4px
     background-color: #FFFFFF;
     padding: 16px 0 18px 0;
-    .ant-pagination-item-active, .ant-pagination-item-active:hover {
-        border-color: #F7AE38 !important;
-        a {
-            color: #F7AE38;
-        }
-    }
-    
-    .ant-pagination-item {
-        border-color: #D9D9D9;
-    }
 `;
 
 // data

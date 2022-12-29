@@ -49,7 +49,6 @@ const ContentContainer = styled.div`
         color: #8C8C8C;
     }
     div .info .icon {
-        color: #D48806;
         text-align: center;
         background-color: #FCF4E0;
         border-radius: 50%;
