@@ -28,7 +28,7 @@ const MyPagination = styled(Pagination)`
 
 // data
 const data = (
-    <div>
+    <div style={{ marginTop: '-16px' }}>
         <MyPost />
         <MyPost />
         <MyPost />

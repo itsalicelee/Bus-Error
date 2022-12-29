@@ -16,24 +16,33 @@ const Container = styled.div`
 `;
 
 const DataContainer = styled.div`
-    display: flex;
+    margin-right: 8px;
+    margin-left: -4px;
     div {
-        margin: 0px 16px;
+        display: inline-block;
+        width: 50px;
+        height: 48px;
+        margin: 0 4px 0 0;
+        padding-top: 3px;
         text-align: center;
+        border-radius: 4px;
     }
     div h2 {
+        font-size: 20px;
+        line-height: 1.2em;
         margin-bottom: 0;
     }
     div p {
         white-space: nowrap;
         margin: 0;
         font-size: 12px;
+        line-height: 1.4em;
         color: #8C8C8C;
     }
 `;
 
 const ContentContainer = styled.div`
-    margin: 0px 8px;
+    flex: 1;
     div {
         display: flex;
         justify-content: space-between;
@@ -41,9 +50,11 @@ const ContentContainer = styled.div`
     h2 {
         font-size: 18px;
         font-weight: 700;
+        margin-bottom: 4px;
     }
     p {
         font-size: 14px;
+        margin-bottom: 10px;
         color: #8C8C8C;
     }
     div .info .icon {
@@ -83,7 +94,7 @@ function MyPost() {
             </DataContainer>
             <ContentContainer>
                 <h2>進程 exec 了設有 SUID 的程式，會改變進程的 EUID 嗎？</h2>
-                <p>為方便大家閱讀，我把關鍵程式碼貼出 有如下 C 程式碼，編譯成程式 test 並設定 test 為 root 所有以及有另外一個程式 fork</p>
+                <p>為方便大家閱讀，我把關鍵程式碼貼出 有如下 C 程式碼，編譯成程式 test {'{'}程式片段{'}'} 並設定 test 為 root 所有以及 SUID {'{'}程式片段{'}'} 有另外一個程式 fork，調用 exec 來執行 test {'{'}程式片段{'}'} 系統 ...</p>{/* eslint-disable-line */}
                 <div>
                     <div>
                         <Tag>C / UNIX</Tag>
