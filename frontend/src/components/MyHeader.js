@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Input from 'antd/es/input/Input';
 import { Button, Typography } from 'antd';
 import styled from 'styled-components';
-import MyModal from './MyModal';
 
 const { Title } = Typography;
 
@@ -43,14 +42,6 @@ const buttonStyle = {
 };
 
 function MyHeader() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
     return (
         <Header>
             <Title level={3} style={titleStyle}>Bus Error</Title>
@@ -58,9 +49,8 @@ function MyHeader() {
             <Container>
                 <Button type="text">問題</Button>
                 <Button type="text">標籤</Button>
-                <Button type="primary" style={buttonStyle} onClick={showModal}>登入 / 註冊</Button>
+                <Button type="primary" style={buttonStyle}>登入 / 註冊</Button>
             </Container>
-            <MyModal isModalOpen={isModalOpen} onCanel={handleCancel} />
         </Header>
     );
 }
