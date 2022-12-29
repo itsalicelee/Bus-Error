@@ -44,7 +44,7 @@ const buttonStyle = {
 function MyHeader() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const showModal = () => {
-        setIsModalOpen(!isModalOpen);
+        setIsModalOpen(true);
     };
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -59,7 +59,7 @@ function MyHeader() {
                 <Button type="text">標籤</Button>
                 <Button type="primary" style={buttonStyle} onClick={showModal}>登入 / 註冊</Button>
             </Container>
-            <MyModal isModalOpen={isModalOpen} onCanel={handleCancel} />
+            <MyModal isModalOpen={isModalOpen} onCancel={handleCancel} />
         </Header>
     );
 }

@@ -20,7 +20,6 @@ const titleStyle = {
 };
 
 const inputStyle = {
-    maxWidth: '500px',
     height: '36px',
     marginBottom: '28px',
 };
@@ -34,7 +33,7 @@ const buttonStyle = {
 const SignIn = (
     <div style={{ marginTop: '8px' }}>
         <Input placeholder="用戶名稱 / 電子郵件" style={inputStyle} />
-        <Input placeholder="密碼" style={inputStyle} />
+        <Input.Password placeholder="密碼" style={inputStyle} />
         <Button
             key="submit"
             type="primary"
@@ -49,8 +48,8 @@ const SignUp = (
     <div style={{ marginTop: '8px' }}>
         <Input placeholder="電子郵件" style={inputStyle} />
         <Input placeholder="用戶名稱" style={inputStyle} />
-        <Input placeholder="密碼" style={inputStyle} />
-        <Input placeholder="再次確認密碼" style={inputStyle} />
+        <Input.Password placeholder="密碼" style={inputStyle} />
+        <Input.Password placeholder="再次確認密碼" style={inputStyle} />
         <Button
             key="submit"
             type="primary"
@@ -75,18 +74,19 @@ const items = [
 ];
 
 function MyModal(props) {
-    const { isModalOpen } = props;
+    const { isModalOpen, onCancel } = props;
     return (
         <Modal
             width="400px"
             style={modalStyle}
             footer={[]}
             open={isModalOpen}
+            onCancel={onCancel}
             centered
             destroyOnClose="true"
             maskClosable="true"
         >
-            <h1 style={titleStyle}>Welcome !</h1>
+            <h1 style={titleStyle}>Welcome!</h1>
             <MyTabs items={items} centered />
         </Modal>
     );
@@ -94,6 +94,7 @@ function MyModal(props) {
 
 MyModal.propTypes = {
     isModalOpen: PropTypes.bool.isRequired,
+    onCancel: PropTypes.func.isRequired,
 };
 
 export default MyModal;
