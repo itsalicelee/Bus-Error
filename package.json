@@ -7,6 +7,10 @@
   "license": "MIT",
   "scripts": {
       "frontend": "cd ./frontend && yarn start",
-      "backend": "cd ./backend && yarn server"
-  }
+      "backend": "cd ./backend && yarn server",
+      "install:all": "cd frontend && yarn install && cd ../backend && yarn install",
+      "install:prod": "cd frontend && yarn install --freeze-lockfile && cd ../backend && yarn install --freeze-lockfile",
+      "build": "cd frontend && yarn build",
+      "deploy": "cd backend && yarn deploy"
+    }
 }
