@@ -5,7 +5,7 @@ import MyCard from '../components/MyCard';
 
 const containerStyle = {
     display: 'flex',
-    maxWidth: '1200px',
+    maxWidth: '1400px',
     marginRight: 'auto',
     marginLeft: 'auto',
 };

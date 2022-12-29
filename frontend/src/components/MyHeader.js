@@ -10,7 +10,7 @@ const { Title } = Typography;
 const Header = styled.header`
     display: flex;
     height: 64px;
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
     padding: 16px 16px;
