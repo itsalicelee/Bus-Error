@@ -31,8 +31,17 @@ exports.GetPost = async (req, res) => {
 
 exports.UpdatePost = async (req, res) => {
 	const body = req.body
-
-
-
-
+    const { content, postId } = body;
+        try {
+            const post = await Post.findOneAndUpdate(
+                { id: postId },
+                {
+                    $set: {
+                        content: content,
+                    },
+                }
+            );
+        } catch (err) {
+            console.log(err);
+        }
 };

@@ -14,7 +14,7 @@ function main(app) {
     /* Post Route */
     app.post('/api/v1/createPost', wrap(postRoute.CreatePost));
     app.get('/api/v1/getPost', wrap(postRoute.GetPost));
-    app.patch('/api/v1/updatePost', wrap(postRoute.UpdatePost));
+    app.get('/api/v1/updatePost', wrap(postRoute.UpdatePost));
     /* Comment Route */
     app.post('/api/v1/createComment', wrap(commentRoute.CreateComment));
     app.get('/api/v1/updateComment', wrap(commentRoute.UpdateComment));
