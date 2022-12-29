@@ -2,7 +2,6 @@ import React from 'react';
 import { gold } from '@ant-design/colors';
 import { ConfigProvider, theme } from 'antd';
 
-import './App.css';
 import Header from './container/Header';
 import Body from './container/Body';
 
@@ -15,6 +14,7 @@ function App() {
             theme={{
                 token: {
                     colorPrimary: gold.primary,
+                    fontFamily: 'Roboto, "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
                 },
                 algorithm: colorAlgorithm,
             }}
