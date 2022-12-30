@@ -40,10 +40,6 @@ const DataContainer = styled.div`
 
 const ContentContainer = styled.div`
     flex: 1;
-    > div {
-        display: flex;
-        justify-content: space-between;
-    }
 `;
 
 const postData = {
@@ -86,7 +82,7 @@ function PostListRow() {
                         { postData.post_body }
                     </Paragraph>
                 </Link>
-                <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                         <Tag>C / UNIX</Tag>
                         <Tag>SUID</Tag>
