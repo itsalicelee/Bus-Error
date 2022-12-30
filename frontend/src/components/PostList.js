@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tabs, Pagination } from 'antd';
 import styled from 'styled-components';
-import MyPost from './MyPost';
+import PostListRow from './PostListRow';
 
 // components
 const Container = styled.div`
@@ -29,11 +29,11 @@ const MyPagination = styled(Pagination)`
 // data
 const data = (
     <div style={{ marginTop: '-16px' }}>
-        <MyPost />
-        <MyPost />
-        <MyPost />
-        <MyPost />
-        <MyPost />
+        <PostListRow />
+        <PostListRow />
+        <PostListRow />
+        <PostListRow />
+        <PostListRow />
     </div>
 );
 
@@ -53,7 +53,7 @@ const items = [
     },
 ];
 
-function MyPosts() {
+function PostListRows() {
     return (
         <Container>
             <MyTabs defaultActiveKey="1" items={items} centered />
@@ -62,4 +62,4 @@ function MyPosts() {
     );
 }
 
-export default MyPosts;
+export default PostListRows;
