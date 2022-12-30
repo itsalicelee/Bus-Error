@@ -1,5 +1,5 @@
 import React from 'react';
-import MyMenu from '../components/MyMenu';
+import PageMenu from '../components/PageMenu';
 import MyPosts from '../components/PostList';
 import MyCard from '../components/MyCard';
 
@@ -13,7 +13,7 @@ const containerStyle = {
 function PostListView() {
     return (
         <div style={containerStyle}>
-            <MyMenu />
+            <PageMenu />
             <MyPosts />
             <MyCard />
         </div>

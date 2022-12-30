@@ -31,7 +31,7 @@ const followingTags = [
     },
 ];
 
-function MyMenu() {
+function PageMenu() {
     return (
         <Container
             items={followingTags}
@@ -43,4 +43,4 @@ function MyMenu() {
     );
 }
 
-export default MyMenu;
+export default PageMenu;
