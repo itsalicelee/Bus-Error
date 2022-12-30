@@ -3,9 +3,8 @@ import { Menu } from 'antd';
 import styled from 'styled-components';
 
 const Container = styled(Menu)`
-    background-color: #FAFAFA;
+    background-color: #FAFAFA00;
     .ant-menu-item-selected {
-        background-color: #FCF4E0 !important;
         font-weight: 700;
     }
 }`;

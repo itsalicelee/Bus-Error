@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Input from 'antd/es/input/Input';
-import { Button, Typography } from 'antd';
+import { Button, Typography, Switch } from 'antd';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
 import MyModal from '../components/MyModal';
-import BusErrorLogo from '../assets/BusErrorLogo.svg';
+import BusErrorLogoDark from '../assets/BusErrorLogoDark.svg';
+import BusErrorLogoLight from '../assets/BusErrorLogoLight.svg';
 
 const { Title } = Typography;
 
@@ -27,7 +30,17 @@ const Container = styled.div`
     justify-content: flex-end;
 }`;
 
-function PageHeader() {
+const HeaderHomeContainer = styled(Title)`
+    margin: 0 !important;
+    flex: 1;
+    flex-shrink: 0;
+    display: flex;
+`;
+
+function PageHeader(props) {
+    const { darkMode, handleThemeChange } = props;
+    document.body.style.backgroundColor = (!darkMode) ? '#FAFAFA' : '#050505';
+
     // Modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const showModal = () => {
@@ -36,16 +49,20 @@ function PageHeader() {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+    const onThemeChange = () => {
+        handleThemeChange();
+    };
 
     return (
         <Header>
-            <Title level={1} style={{ margin: 0, flex: 1, flexShrink: 0 }}>
+            <HeaderHomeContainer level={1}>
                 <Link to="/">
-                    <img src={BusErrorLogo} alt="Bus Error" style={{ display: 'block' }} />
+                    <img src={darkMode ? BusErrorLogoDark : BusErrorLogoLight} alt="Bus Error" style={{ display: 'block' }} />
                 </Link>
-            </Title>
+            </HeaderHomeContainer>
             <Input placeholder="搜尋" style={{ maxWidth: 500, flex: 1 }} />
             <Container>
+                <Switch checked={darkMode} onChange={onThemeChange} />
                 <Button type="text">問題</Button>
                 <Button type="text">標籤</Button>
                 <Button type="primary" shape="round" onClick={showModal}>登入 / 註冊</Button>
@@ -54,5 +71,10 @@ function PageHeader() {
         </Header>
     );
 }
+
+PageHeader.propTypes = {
+    darkMode: PropTypes.bool.isRequired,
+    handleThemeChange: PropTypes.func.isRequired,
+};
 
 export default PageHeader;
