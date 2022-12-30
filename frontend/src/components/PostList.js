@@ -8,7 +8,7 @@ const { useToken } = theme;
 
 // components
 const Container = styled.div`
-    border-radius: 4px;
+    border-radius: 8px;
     position: relative;
     margin: 0 16px;
     padding-top: 4px;
