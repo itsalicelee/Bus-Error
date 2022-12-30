@@ -10,7 +10,7 @@ const containerStyle = {
     marginLeft: 'auto',
 };
 
-function Body() {
+function PostListView() {
     return (
         <div style={containerStyle}>
             <MyMenu />
@@ -20,4 +20,4 @@ function Body() {
     );
 }
 
-export default Body;
+export default PostListView;

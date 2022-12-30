@@ -1,9 +1,10 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { gold } from '@ant-design/colors';
 import { ConfigProvider, theme } from 'antd';
 
 import Header from './container/Header';
-import Body from './container/Body';
+import PostListView from './container/PostListView';
 
 const colorAlgorithm = theme.defaultAlgorithm;
 // const colorAlgorithm = theme.darkAlgorithm;
@@ -19,8 +20,13 @@ function App() {
                 algorithm: colorAlgorithm,
             }}
         >
-            <Header />
-            <Body />
+            <Router>
+                <Header />
+                <Routes>
+                    <Route path="/" element={<PostListView />} />
+                    <Route path="/posts" element={<PostListView />} />
+                </Routes>
+            </Router>
         </ConfigProvider>
     );
 }
