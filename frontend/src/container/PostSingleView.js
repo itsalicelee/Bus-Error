@@ -1,8 +1,19 @@
+// General
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Typography, Button, Tag, theme } from 'antd'; /* eslint-disable-line */
 import styled from 'styled-components';
+import dayjs from 'dayjs';
 
+// Ant Design
+import { Typography, Button, Tag, Avatar, theme, ConfigProvider } from 'antd'; /* eslint-disable-line */
+import { gold } from '@ant-design/colors';
+import { UserOutlined } from '@ant-design/icons';
+
+// FontAwesome Icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+
+// React Markdown
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -11,10 +22,11 @@ import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+// Components & containers
 import PageMenu from '../components/PageMenu';
 import PageSideBar from '../components/PageSideBar';
 
-const { Title } = Typography;
+const { Text, Title } = Typography;
 const { useToken } = theme;
 
 const MainWrapper = styled.div`
@@ -28,17 +40,16 @@ const MainWrapper = styled.div`
 const MainContainer = styled.div`
     flex: 1;
     margin: 0 16px;
+    padding-bottom: 20px;
 `;
 
 const PostContainer = styled.div`
     border-radius: 4px;
-    position: relative;
-    background-color: #FFFFFF;
     box-shadow: 0px 2px 6px #00000017;
 `;
 
 const PostHeadContainer = styled.div`
-    margin: 0 16px;
+    margin: 0 20px;
     padding-bottom: 16px;
     border-bottom: 1px solid #00000017;
 `;
@@ -47,7 +58,7 @@ const TitleContainer = styled.div`
     display: flex;
     align-items: flex-start;
     padding-top: 9px;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
 `;
 
 const PostTitle = styled(Title)`
@@ -59,9 +70,10 @@ const PostTitle = styled(Title)`
 `;
 
 const PostContentContainer = styled.div`
+    margin: 12px 20px;
     pre {
-        margin-left: -6px;
-        margin-right: -6px;
+        margin-left: -8px;
+        margin-right: -8px;
     }
     p code {
         background: #FAFAFA;
@@ -73,22 +85,44 @@ const PostContentContainer = styled.div`
     }
 `;
 
-/* eslint-disable */
-const mdText = `
-# Go Big or Go Home #
+const PostActionContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 20px;
+    padding: 12px 0 14px 0;
+    border-top: 1px solid #00000017;
+`;
 
+const CommentContainer = styled.div`
+    border-radius: 4px;
+    box-shadow: 0px 2px 6px #00000017;
+    margin-top: 16px;
+`;
+
+/* eslint-disable */
+const postData = {
+    post_id: 0,
+    post_author: {
+        user_id: 'paun3wrad6saff6LUM4cris2gnew',
+        user_name: '不知名的小子',
+    },
+    post_tag: [],
+    post_topic: '進程 exec 了設有 SUID 的程式，會改變進程的 EUID 嗎？',
+    post_shortbody: '為方便大家閱讀，我把關鍵程式碼貼出 有如下 C 程式碼，編譯成程式 test {程式片段} 並設定 test 為 root 所有以及 SUID {程式片段} 有另外一個程式 fork，調用 exec 來執行 test {程式片段} 系統系統中普通用戶的 uid 為 1000，root 的 uid 為 0 個人覺得，輸出結果應該是： EUID:0 因為 test 設置了 SUID，fork 在 exec 時應該會將有效用戶 ID',
+    post_fullBody: `
 ## Task Description ##
 
 作為實習員工的你，在前兩次由組織所策畫的項目中表現得相當傑出，大哥對此讚譽有加。於是，他決定指派你參與一項更大的計畫。正如組織的座右銘「Never settle for less」所言，接下來的計畫將會由包括你在內的團隊，策畫一系列的銀行搶劫案。與侵入民宅行竊相比，搶劫銀行可要複雜得多。  
-  
+
 還好，負責偵察的隊員已經拿到了城市裡所有銀行的平面圖，以及每間銀行的保全系統的規格說明書。為了防止歹徒入侵，每間銀行的金庫都設有雷射裝置，而保全系統的規格說明書裡則詳細地列出了這些雷射器的具體位置。你的任務是按照這份說明書計算銀行裡有多少道雷射光束，讓你的伙伴能造出足夠數量的**特別裝置**。這種裝置能在不觸發警報的情況下，通過雷射光束的檢測。  
 
 https://cool.ntu.edu.tw
-  
+
 和社區裡的住宅一樣，相鄰的兩間銀行的保全系統也是連通的。因此如果在同一個晚上，相鄰的兩間銀行的金庫都有被打開的話，警報就會響起，而相關單位也會接獲通報。  
-  
+
 給定：一個整數 $N$，代表目標城市裡的銀行數量；一個包含 $N$ 個整數的數組 *money*，依序表示每間銀行金庫所存放的現金；一個 binary string 的陣列，以 $4\times6$ 矩陣的形式表示每間銀行的雷射器位置。對於每行 binary string，*map[i]* 表示銀行的第 $i$ 列，由 *‘0’* 和 *‘1’* 組成，每位數字表示該列每一格的狀況：*‘0’* 表示該格為空，而 *‘1’* 則表示該格設有雷射器。  
-  
+
 當兩個雷射器同時滿足以下條件，它們之間就會產生一束雷射光束：  
 
 1. 這兩個雷射器位處兩個不同的列 $r_1$ 和 $r_2$ 上，其中 $r_1 \lt r_2$；  
@@ -131,59 +165,12 @@ int main () {
     return 0;
 }
 \`\`\`
-
-請把你的函數的原型部份放在 \`function.h\`，並把定義部份放在 \`function.c\` 中。除了 \`beam\` 和 \`rob\` 之外，你也可以自訂其他函數。  
-
-## Input Format ##
-
-共有 $2 + N$ 行輸入  
-第一行：整數 $N$  
-第二行：$N$ 個整數，當中的第 *i* 個表示 *money[i]*  
-隨後的 $N$ 行：每行均是一個 binary string array  
-
-## Output Format ##
-
-輸出一個整數，表示為了在一個晚上裡盜走最多金額所需的特別裝置數量。  
-
-## Constraints ##  
-
-### Test Group 1 (30%) ###  
-
-$N = 1$  
-$0\le \text{money}[i] \le 200000 \,\,\forall \,i\in[0, N)$  
-
-### Test Group 2 (70%) ###
-
-$1\le N \le 20$   
-$0\le \text{money}[i] \le 200000 \,\,\forall \,i\in[0, N)$  
-
-## Sample Input 1 對應的保全系統示意圖 
-
-## Sample Input 1
-\`\`\`txt
-1
-1
-011001 000000 010100 001000
-\`\`\`
-## Sample Output 1
-\`\`\`txt
-8
-\`\`\`
-## Sample Input 2
-\`\`\`txt
-4
-6 8 5 2
-011010 100100 000000 111100
-100011 111110 100010 010110
-001110 100101 100111 101111
-000101 110011 111111 010010
-\`\`\`
-## Sample Output 2
-\`\`\`txt
-55
-\`\`\`
-
-`;
+        
+    `,
+    post_createdAt: 1672297200360,
+    post_updatedAt: 1672297200360,
+    post_views: 12,
+};
 /* eslint-enable */
 
 const rmComponents = {
@@ -206,19 +193,20 @@ function PostListView() {
 
     const { postId } = useParams();
     console.log(postId);
+    console.log(ConfigProvider.theme);
 
     return (
         <MainWrapper>
             <PageMenu />
             <MainContainer>
-                <PostContainer>
-                    <PostHeadContainer>
+                <PostContainer style={{ background: token.colorBgContainer }}>
+                    <PostHeadContainer style={{ borderBottomColor: token.colorBorder }}>
                         <TitleContainer>
-                            <PostTitle>Eslint AirBNB with 4 spaces for indent</PostTitle>
+                            <PostTitle>{postData.post_topic}</PostTitle>
                             <Button type="primary">問問題</Button>
                         </TitleContainer>
                         <div>
-                            <Tag>C / UNIX</Tag>
+                            <Tag color="gold">C / UNIX</Tag>
                             <Tag>SUID</Tag>
                             <Tag>EUID</Tag>
                         </div>
@@ -230,7 +218,7 @@ function PostListView() {
                         fontWeight: token.fontWeight,
                         colorPrimary: token.colorPrimary,
                         colorInfo: token.colorInfo,
-                        margin: 16,
+                        colorTextBase: token.colorTextBase,
                     }}
                     >
                         <ReactMarkdown
@@ -238,10 +226,42 @@ function PostListView() {
                             rehypePlugins={[rehypeKatex]}
                             components={rmComponents}
                         >
-                            {mdText}
+                            {postData.post_fullBody}
                         </ReactMarkdown>
                     </PostContentContainer>
+                    <PostActionContainer style={{ bordeTopColor: token.colorBorder }}>
+                        <div style={{ marginLeft: -6 }}>
+                            <Button type="text" shape="circle" style={{ fontSize: 16, paddingTop: 3, color: '#8C8C8C' }}><FontAwesomeIcon icon={faArrowUp} /></Button>
+                            <Button type="text" shape="circle" style={{ fontSize: 16, paddingTop: 3, color: '#8C8C8C' }}><FontAwesomeIcon icon={faArrowDown} /></Button>
+                            <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>16</Text>
+                        </div>
+                        <div>
+                            <Button type="text" size="small" shape="round" style={{ padding: '0 6px 0 0px', marginRight: -2 }}>
+                                <Avatar
+                                    icon={<UserOutlined />}
+                                    size="small"
+                                    style={{
+                                        backgroundColor: '#FCF4E0',
+                                        color: '#D48806',
+                                        marginTop: -3,
+                                        marginRight: 3,
+                                        transform: 'scale(0.85)',
+                                    }}
+                                />
+                                <span style={{ color: gold.primary }}>
+                                    { postData.post_author.user_name }
+                                </span>
+                            </Button>
+                            <Text type="secondary">
+                                ·&nbsp;提問於&nbsp;
+                                { dayjs(postData.post_createdAt).format('YYYY-MM-DD HH:mm') }
+                            </Text>
+                        </div>
+                    </PostActionContainer>
                 </PostContainer>
+                <CommentContainer style={{ background: token.colorBgContainer }}>
+                    1
+                </CommentContainer>
             </MainContainer>
             <PageSideBar />
         </MainWrapper>

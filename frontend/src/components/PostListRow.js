@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Tag, Typography } from 'antd';
+import { Tag, Typography, Avatar, Button, theme } from 'antd'; /* eslint-disable-line */
+import { gold } from '@ant-design/colors';
 import { UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 
 // components
 const { Paragraph, Text, Title } = Typography;
+const { useToken } = theme;
 
 const Container = styled.div`
     display: flex;
@@ -14,9 +16,8 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     padding: 16px 0px;
-    margin: 0 16px;
+    margin: 0 20px;
     border-bottom: 1px solid #E8E8E8;
-    background-color: #FFFFFF;
     h2 {
         font-size: 18px;
         margin-bottom: 0;
@@ -43,19 +44,6 @@ const ContentContainer = styled.div`
         display: flex;
         justify-content: space-between;
     }
-    div .info .icon {
-        text-align: center;
-        background-color: #FCF4E0;
-        border-radius: 50%;
-        height: 20px;
-        width: 20px;
-    }
-    div .info .user {
-        color: #FAAD14;
-    }
-    div .info span {
-        white-space: nowrap;
-    }
 `;
 
 const postData = {
@@ -73,8 +61,10 @@ const postData = {
 };
 
 function PostListRow() {
+    const { token } = useToken();
+
     return (
-        <Container>
+        <Container style={{ borderBottomColor: token.colorBorder }}>
             <DataContainer>
                 <div>
                     <Title level={2}>16</Title>
@@ -92,7 +82,9 @@ function PostListRow() {
             <ContentContainer>
                 <Link to={`/posts/${postData.post_id}`}>
                     <Title level={2}>{ postData.post_topic }</Title>
-                    <Paragraph ellipsis={{ rows: 2 }} type="secondary" style={{ marginTop: 4, marginBottom: 10 }}>{ postData.post_body }</Paragraph>
+                    <Paragraph ellipsis={{ rows: 2 }} type="secondary" style={{ marginTop: 4, marginBottom: 10 }}>
+                        { postData.post_body }
+                    </Paragraph>
                 </Link>
                 <div>
                     <div>
@@ -100,11 +92,25 @@ function PostListRow() {
                         <Tag>SUID</Tag>
                         <Tag>EUID</Tag>
                     </div>
-                    <div className="info">
-                        <span className="user icon"><UserOutlined /></span>
-                        <span className="user">&nbsp;segmentfault</span>
+                    <div>
+                        <Button type="text" size="small" shape="round" style={{ padding: '0 6px 0 0px', marginRight: -2 }}>
+                            <Avatar
+                                icon={<UserOutlined />}
+                                size="small"
+                                style={{
+                                    backgroundColor: '#FCF4E0',
+                                    color: '#D48806',
+                                    marginTop: -3,
+                                    marginRight: 3,
+                                    transform: 'scale(0.85)',
+                                }}
+                            />
+                            <span style={{ color: gold.primary }}>
+                                { postData.post_author.user_name }
+                            </span>
+                        </Button>
                         <Text type="secondary">
-                            &nbsp;·&nbsp;提問於&nbsp;
+                            ·&nbsp;提問於&nbsp;
                             { dayjs(postData.post_createdAt).format('YYYY-MM-DD HH:mm') }
                         </Text>
                     </div>
