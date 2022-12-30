@@ -5,6 +5,7 @@ import { ConfigProvider, theme } from 'antd';
 
 import PageHeader from './container/PageHeader';
 import PostListView from './container/PostListView';
+import PostSingleView from './container/PostSingleView';
 
 const colorAlgorithm = theme.defaultAlgorithm;
 // const colorAlgorithm = theme.darkAlgorithm;
@@ -25,6 +26,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<PostListView />} />
                     <Route path="/posts" element={<PostListView />} />
+                    <Route path="/posts/:postId" element={<PostSingleView />} />
                 </Routes>
             </Router>
         </ConfigProvider>
