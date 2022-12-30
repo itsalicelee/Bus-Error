@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from 'antd';
 
-function MyCard() {
+function PageSideBar() {
     return (
         <Card title="應該可以放蠻多東西" style={{ width: '200px', maxHeight: '300px' }}>
             <p>· 使用者貢獻排行 ?</p>
@@ -12,4 +12,4 @@ function MyCard() {
     );
 }
 
-export default MyCard;
+export default PageSideBar;

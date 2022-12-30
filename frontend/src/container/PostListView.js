@@ -1,7 +1,7 @@
 import React from 'react';
 import PageMenu from '../components/PageMenu';
-import MyPosts from '../components/PostList';
-import MyCard from '../components/MyCard';
+import PostList from '../components/PostList';
+import PageSideBar from '../components/PageSideBar';
 
 const containerStyle = {
     display: 'flex',
@@ -14,8 +14,8 @@ function PostListView() {
     return (
         <div style={containerStyle}>
             <PageMenu />
-            <MyPosts />
-            <MyCard />
+            <PostList />
+            <PageSideBar />
         </div>
     );
 }
