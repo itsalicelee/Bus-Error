@@ -7,7 +7,7 @@ const tagChild = (identifier, displayName) => ({
     key: identifier,
 });
 
-function useMenuItems() {
+function useMenuData() {
     const [tagItems, setTagItems] = useState([]); // eslint-disable-line
 
     useEffect(() => {
@@ -39,4 +39,4 @@ function useMenuItems() {
     return tagItems;
 }
 
-export default useMenuItems;
+export default useMenuData;

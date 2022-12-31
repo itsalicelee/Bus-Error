@@ -3,7 +3,7 @@ import { useLocation, matchPath } from 'react-router-dom';
 import { Menu as AntdMenu } from 'antd';
 import styled from 'styled-components';
 
-import useMenu from '../hooks/useMenu';
+import useMenuData from '../hooks/useMenuData';
 
 const Menu = styled(AntdMenu)`
     background-color: #FAFAFA00;
@@ -13,7 +13,7 @@ const Menu = styled(AntdMenu)`
 }`;
 
 function PageMenu() {
-    const tagItems = useMenu();
+    const tagItems = useMenuData();
     const location = useLocation();
     const [tagName, setTagName] = useState('');
 
