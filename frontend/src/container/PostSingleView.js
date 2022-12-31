@@ -7,18 +7,8 @@ import { Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 // Components & containers
-import PageMenu from './PageMenu';
-import PageSideBar from '../components/PageSideBar';
 import PostSingleContent from './PostSingleContent';
 import PostSingleComment from './PostSingleComment';
-
-const MainWrapper = styled.div`
-    display: flex;
-    align-items: flex-start;
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
-`;
 
 const MainContainer = styled.div`
     flex: 1;
@@ -120,14 +110,10 @@ function PostListView() {
     console.log(postId);
 
     return (
-        <MainWrapper>
-            <PageMenu />
-            <MainContainer>
-                <PostSingleContent rmComponents={rmComponents} postData={postData} />
-                <PostSingleComment rmComponents={rmComponents} postData={postData} />
-            </MainContainer>
-            <PageSideBar />
-        </MainWrapper>
+        <MainContainer>
+            <PostSingleContent rmComponents={rmComponents} postData={postData} />
+            <PostSingleComment rmComponents={rmComponents} postData={postData} />
+        </MainContainer>
     );
 }
 

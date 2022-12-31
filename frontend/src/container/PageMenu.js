@@ -1,9 +1,9 @@
-import { React } from 'react';
-import { useParams } from 'react-router-dom';
+import { React, useEffect, useState } from 'react';
+import { useLocation, matchPath } from 'react-router-dom';
 import { Menu as AntdMenu } from 'antd';
 import styled from 'styled-components';
 
-import useMenuItems from '../hooks/useMenuItems';
+import useMenu from '../hooks/useMenu';
 
 const Menu = styled(AntdMenu)`
     background-color: #FAFAFA00;
@@ -13,8 +13,17 @@ const Menu = styled(AntdMenu)`
 }`;
 
 function PageMenu() {
-    const { tagName } = useParams();
-    const tagItems = useMenuItems();
+    const tagItems = useMenu();
+    const location = useLocation();
+    const [tagName, setTagName] = useState('');
+
+    useEffect(() => {
+        const match = matchPath(
+            { path: '/posts/tag/:tagName' },
+            location.pathname,
+        );
+        setTagName((match) ? match.params.tagName : '');
+    }, [location]);
 
     return (
         <Menu
