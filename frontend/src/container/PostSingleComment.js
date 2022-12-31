@@ -64,7 +64,7 @@ function PostSingleComment(props) {
 
     return (
         <CommentWrapper style={{ background: token.colorBgContainer }}>
-            <CommentHeadContainer style={{ bordeBottomColor: token.colorBorder }}>
+            <CommentHeadContainer style={{ borderBottomColor: token.colorBorder }}>
                 <Text style={{ fontSize: 16 }}>共有 6 則留言</Text>
                 <div>
                     <Radio.Group

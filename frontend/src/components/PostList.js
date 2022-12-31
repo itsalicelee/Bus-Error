@@ -42,6 +42,7 @@ function PostListRows() {
             setPostItems(res.data.posts);
             setPostCount(res.data.totalPost);
             setPostKeyword(res.data.mainTag.tag_displayName);
+            console.log('REFRESHED');
         });
     }, [location.pathname]);
 

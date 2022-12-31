@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 
 // Ant Design
-import { Typography, Button, Tag, Avatar, theme, Radio } from 'antd'; /* eslint-disable-line */
+import { Typography, Button, Tag, Avatar, theme } from 'antd'; /* eslint-disable-line */
 import { gold } from '@ant-design/colors';
 import { UserOutlined } from '@ant-design/icons';
 
@@ -55,11 +55,6 @@ const PostContentContainer = styled.div`
         margin-left: -8px;
         margin-right: -8px;
     }
-    p code {
-        background: #FAFAFA;
-        padding: 2px 4px;
-        border-radius: 8px;
-    }
     h1, h2, h3, h4, h5, h6 {
         font-weight: 700;
     }
@@ -98,17 +93,19 @@ function PostSingleContent(props) {
                 fontWeight: token.fontWeight,
                 colorPrimary: token.colorPrimary,
                 colorInfo: token.colorInfo,
+                color: (token.isDarkMode) ? '#FFFFFFD9' : '#000000E0',
             }}
             >
                 <ReactMarkdown
                     remarkPlugins={[remarkMath, remarkGfm]}
                     rehypePlugins={[rehypeKatex]}
                     components={rmComponents}
+                    darkMode={token.isDarkMode}
                 >
                     {postData.post_fullBody}
                 </ReactMarkdown>
             </PostContentContainer>
-            <PostActionContainer style={{ bordeTopColor: token.colorBorder }}>
+            <PostActionContainer style={{ borderTopColor: token.colorBorder }}>
                 <div style={{ marginLeft: -6 }}>
                     <Button type="text" shape="circle" style={{ fontSize: 16, paddingTop: 3, color: '#8C8C8C' }}><FontAwesomeIcon icon={faArrowUp} /></Button>
                     <Button type="text" shape="circle" style={{ fontSize: 16, paddingTop: 3, color: '#8C8C8C' }}><FontAwesomeIcon icon={faArrowDown} /></Button>

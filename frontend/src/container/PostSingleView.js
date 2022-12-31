@@ -1,14 +1,17 @@
 // General
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { theme } from 'antd';
 import styled from 'styled-components';
 
 import { Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
-import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneLight, oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 // Components & containers
 import PostSingleContent from './PostSingleContent';
 import PostSingleComment from './PostSingleComment';
+
+const { useToken } = theme;
 
 const MainContainer = styled.div`
     flex: 1;
@@ -88,9 +91,17 @@ int main () {
     post_views: 12,
     
 };
+
 /* eslint-enable */
 
 const rmComponents = {
+    h1: 'h2',
+    h2: 'h3',
+    h3: 'h4',
+    h4: 'h5',
+};
+
+const rmcCodeLight = {
     code: ({ inline, className, children }) => {
         const match = /language-(\w+)/.exec(className || '');
         return !inline && match ? (
@@ -99,20 +110,44 @@ const rmComponents = {
             </SyntaxHighlighterPrism>
         ) : (<code className={className}>{children}</code>);
     },
-    h1: 'h2',
-    h2: 'h3',
-    h3: 'h4',
-    h4: 'h5',
+    a: ({ className, href, children }) => (<a className={className} href={href} target="_blank" rel="noreferrer" style={{ color: '#FAAD14' }}>{children}</a>),
+};
+
+const rmcCodeDark = {
+    code: ({ inline, className, children }) => {
+        const match = /language-(\w+)/.exec(className || '');
+        return !inline && match ? (
+            <SyntaxHighlighterPrism style={oneDark} language={match[1]} PreTag="div">
+                { String(children).replace(/\n$/, '') }
+            </SyntaxHighlighterPrism>
+        ) : (<code className={className}>{children}</code>);
+    },
+    a: ({ className, href, children }) => (<a className={className} href={href} target="_blank" rel="noreferrer" style={{ color: '#D89614' }}>{children}</a>),
 };
 
 function PostListView() {
     const { postId } = useParams();
-    console.log(postId);
+    const { token } = useToken();
+    console.log(postId, token.isDarkMode);
 
     return (
         <MainContainer>
-            <PostSingleContent rmComponents={rmComponents} postData={postData} />
-            <PostSingleComment rmComponents={rmComponents} postData={postData} />
+            <PostSingleContent
+                rmComponents={
+                    (token.isDarkMode)
+                        ? { ...rmcCodeDark, ...rmComponents }
+                        : { ...rmcCodeLight, ...rmComponents }
+                }
+                postData={postData}
+            />
+            <PostSingleComment
+                rmComponents={
+                    (token.isDarkMode)
+                        ? { ...rmcCodeDark, ...rmComponents }
+                        : { ...rmcCodeLight, ...rmComponents }
+                }
+                postData={postData}
+            />
         </MainContainer>
     );
 }

@@ -21,7 +21,7 @@ const MainWrapper = styled.div`
     margin-right: auto;
 `;
 
-const fontSettings = 'Roboto, "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
+const fontConfig = 'Roboto, "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
 
 function App() {
     const [darkMode, setDarkMode] = useState(lsDarkMode === 'true' || false);
@@ -37,7 +37,7 @@ function App() {
     return (
         <ConfigProvider
             theme={{
-                token: { colorPrimary: gold.primary, fontFamily: fontSettings },
+                token: { colorPrimary: gold.primary, fontFamily: fontConfig, isDarkMode: darkMode },
                 algorithm: (darkMode) ? theme.darkAlgorithm : theme.defaultAlgorithm,
             }}
         >
