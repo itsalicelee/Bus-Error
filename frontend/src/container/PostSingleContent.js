@@ -1,24 +1,17 @@
 // General
 import { React } from 'react';
 import styled from 'styled-components';
-import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 
 // Ant Design
 import { Typography, Button, Tag, Avatar, theme } from 'antd'; /* eslint-disable-line */
-import { gold } from '@ant-design/colors';
-import { UserOutlined } from '@ant-design/icons';
 
 // FontAwesome Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
-// React Markdown
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+import MarkdownContainer from '../components/MarkdownContainer';
+import ContentPublishInfo from '../components/ContentPublishInfo';
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
@@ -51,13 +44,6 @@ const PostTitle = styled(Title)`
 
 const PostContentContainer = styled.div`
     margin: 12px 20px;
-    pre {
-        margin-left: -8px;
-        margin-right: -8px;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        font-weight: 700;
-    }
 `;
 
 const PostActionContainer = styled.div`
@@ -71,7 +57,7 @@ const PostActionContainer = styled.div`
 
 function PostSingleContent(props) {
     const { token } = useToken();
-    const { rmComponents, postData } = props;
+    const { postData } = props;
 
     return (
         <PostContainer style={{ background: token.colorBgContainer }}>
@@ -86,24 +72,10 @@ function PostSingleContent(props) {
                     <Tag>EUID</Tag>
                 </div>
             </PostHeadContainer>
-            <PostContentContainer style={{
-                fontFamily: token.fontFamily,
-                fontSize: token.fontSize,
-                lineHeight: token.lineHeight,
-                fontWeight: token.fontWeight,
-                colorPrimary: token.colorPrimary,
-                colorInfo: token.colorInfo,
-                color: (token.isDarkMode) ? '#FFFFFFD9' : '#000000E0',
-            }}
-            >
-                <ReactMarkdown
-                    remarkPlugins={[remarkMath, remarkGfm]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={rmComponents}
-                    darkMode={token.isDarkMode}
-                >
-                    {postData.post_fullBody}
-                </ReactMarkdown>
+            <PostContentContainer>
+                <MarkdownContainer>
+                    {postData.post_fbody}
+                </MarkdownContainer>
             </PostContentContainer>
             <PostActionContainer style={{ borderTopColor: token.colorBorder }}>
                 <div style={{ marginLeft: -6 }}>
@@ -111,35 +83,13 @@ function PostSingleContent(props) {
                     <Button type="text" shape="circle" style={{ fontSize: 16, paddingTop: 3, color: '#8C8C8C' }}><FontAwesomeIcon icon={faArrowDown} /></Button>
                     <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>16</Text>
                 </div>
-                <div>
-                    <Button type="text" size="small" shape="round" style={{ padding: '0 6px 0 0px', marginRight: -2 }}>
-                        <Avatar
-                            icon={<UserOutlined />}
-                            size="small"
-                            style={{
-                                backgroundColor: '#FCF4E0',
-                                color: '#D48806',
-                                marginTop: -3,
-                                marginRight: 3,
-                                transform: 'scale(0.85)',
-                            }}
-                        />
-                        <span style={{ color: gold.primary }}>
-                            { postData.post_author.user_name }
-                        </span>
-                    </Button>
-                    <Text type="secondary">
-                        ·&nbsp;提問於&nbsp;
-                        { dayjs(postData.post_createdAt).format('YYYY-MM-DD HH:mm') }
-                    </Text>
-                </div>
+                <ContentPublishInfo actionText="提問於" date={postData.post_createdAt} username={postData.post_author.user_name} />
             </PostActionContainer>
         </PostContainer>
     );
 }
 
 PostSingleContent.propTypes = {
-    rmComponents: PropTypes.object.isRequired,  /* eslint-disable-line */
     postData: PropTypes.object.isRequired,      /* eslint-disable-line */
 };
 

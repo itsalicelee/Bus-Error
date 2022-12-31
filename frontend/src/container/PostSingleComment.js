@@ -1,26 +1,14 @@
 // General
 import { React, useState } from 'react';
 import styled from 'styled-components';
-// import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 
 // Ant Design
-import { Typography, Button, Tag, Avatar, theme, Radio } from 'antd'; /* eslint-disable-line */
-// import { gold } from '@ant-design/colors';
-// import { UserOutlined } from '@ant-design/icons';
+import { Typography, Button, theme, Radio } from 'antd'; /* eslint-disable-line */
 
 // // FontAwesome Icons
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
-
-// // React Markdown
-// import ReactMarkdown from 'react-markdown';
-// import remarkGfm from 'remark-gfm';
-// import remarkMath from 'remark-math';
-// import rehypeKatex from 'rehype-katex';
-// import 'katex/dist/katex.min.css';
-// import { Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
-// import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -51,7 +39,7 @@ const CommentItem = styled.li`
 
 function PostSingleComment(props) {
     const { token } = useToken();
-    const { rmComponents, postData } = props;   /* eslint-disable-line */
+    const { postData } = props;   /* eslint-disable-line */
 
     const [commentSortValue, setCommentSortValue] = useState(0);
     const onCommentSortChange = ({ target: { value } }) => {
@@ -87,7 +75,6 @@ function PostSingleComment(props) {
 }
 
 PostSingleComment.propTypes = {
-    rmComponents: PropTypes.object.isRequired,  /* eslint-disable-line */
     postData: PropTypes.object.isRequired,      /* eslint-disable-line */
 };
 

@@ -1,15 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Tag, Typography, Avatar, Button, theme } from 'antd'; /* eslint-disable-line */
-import { gold } from '@ant-design/colors';
-import { UserOutlined } from '@ant-design/icons';
+import { Tag, Typography, theme } from 'antd';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import dayjs from 'dayjs';
 
 import DataContainerChild from './PostListRowSquare';
+import ContentPublishInfo from './ContentPublishInfo';
 
-const { Paragraph, Text, Title } = Typography;
+const { Paragraph, Title } = Typography;
 const { useToken } = theme;
 
 // Components
@@ -55,28 +53,7 @@ function PostListRow(props) {
                             </Tag>
                         ))}
                     </div>
-                    <div>
-                        <Button type="text" size="small" shape="round" style={{ padding: '0 6px 0 0px', marginRight: -2 }}>
-                            <Avatar
-                                icon={<UserOutlined />}
-                                size="small"
-                                style={{
-                                    backgroundColor: '#FCF4E0',
-                                    color: '#D48806',
-                                    marginTop: -3,
-                                    marginRight: 3,
-                                    transform: 'scale(0.85)',
-                                }}
-                            />
-                            <span style={{ color: gold.primary }}>
-                                { postItem.post_author.user_name }
-                            </span>
-                        </Button>
-                        <Text type="secondary">
-                            ·&nbsp;提問於&nbsp;
-                            { dayjs(postItem.post_createdAt).format('YYYY-MM-DD HH:mm') }
-                        </Text>
-                    </div>
+                    <ContentPublishInfo actionText="提問於" date={postItem.post_createdAt} username={postItem.post_author.user_name} />
                 </div>
             </ContentContainer>
         </Container>

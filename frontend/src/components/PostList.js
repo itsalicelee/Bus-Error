@@ -35,13 +35,20 @@ function PostListRows() {
     const [postItems, setPostItems] = useState([]);
     const [postData, setPostData] = useState((<TabChild />));
     const [postCount, setPostCount] = useState(1);
+    const [postKeywordType, setpostKeywordType] = useState('');
     const [postKeyword, setPostKeyword] = useState('');
 
     useEffect(() => {
         axios.get('/posts').then((res) => {
             setPostItems(res.data.posts);
             setPostCount(res.data.totalPost);
-            setPostKeyword(res.data.mainTag.tag_displayName);
+            if (res.data.mainTag) {
+                setpostKeywordType('標籤');
+                setPostKeyword(res.data.mainTag.tag_displayName);
+            } else {
+                setpostKeywordType('標籤');
+                setPostKeyword('全部');
+            }
             console.log('REFRESHED');
         });
     }, [location.pathname]);
@@ -59,8 +66,10 @@ function PostListRows() {
     return (
         <Container style={{ background: token.colorBgContainer }}>
             <Text style={{ ...tabSideStyle, left: 20, lineHeight: '50px' }}>
-                {/* 搜尋時轉為[關鍵字] */}
-                <Text type="secondary">標籤: </Text>
+                <Text type="secondary">
+                    { postKeywordType }
+                    :&nbsp;
+                </Text>
                 <Text strong>{ postKeyword }</Text>
             </Text>
             <Button type="primary" style={{ ...tabSideStyle, right: 20, top: 9 }}>問問題</Button>

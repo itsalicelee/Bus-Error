@@ -25,7 +25,6 @@ function PostListRowSquare(props) {
                 ...generalDivStyle,
                 border: (type === '1' && value > 0) ? `1px solid ${token.colorPrimary}` : 'none',
                 background: (type === '1' && value > 0 && fill) ? token.colorPrimary : token.colorBgContainer,
-                fontWeight: (type === '1' && value > 0) ? 700 : 400,
             }}
         >
             <Title
@@ -34,7 +33,7 @@ function PostListRowSquare(props) {
                     lineHeight: 0.9,
                     margin: 0,
                     fontWeight: (value) ? 700 : 400,
-                    color: (type === '1' && value > 0) ? (fill ? token.colorBgContainer : token.colorPrimary ) : '', /* eslint-disable-line */
+                    color: (type === '1' && value > 0) ? (fill ? '#FFFFFF' : token.colorPrimary ) : '', /* eslint-disable-line */
                 }}
                 type={(value) ? 'primary' : 'secondary'}
                 level={2}
@@ -46,7 +45,8 @@ function PostListRowSquare(props) {
                 style={{
                     fontSize: 12,
                     marginTop: -2,
-                    color: (type === '1' && value > 0) ? (fill ? token.colorBgContainer : token.colorPrimary ) : '', /* eslint-disable-line */
+                    color: (type === '1' && value > 0) ? (fill ? '#FFFFFF' : token.colorPrimary ) : '', /* eslint-disable-line */
+                    fontWeight: (type === '1' && value > 0 && !fill && !token.isDarkMode) ? 700 : 400,
                 }}
             >
                 { name }
