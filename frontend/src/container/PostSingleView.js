@@ -7,7 +7,7 @@ import { Prism as SyntaxHighlighterPrism } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 // Components & containers
-import PageMenu from '../components/PageMenu';
+import PageMenu from './PageMenu';
 import PageSideBar from '../components/PageSideBar';
 import PostSingleContent from './PostSingleContent';
 import PostSingleComment from './PostSingleComment';

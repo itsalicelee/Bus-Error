@@ -1,5 +1,5 @@
 import React from 'react';
-import PageMenu from '../components/PageMenu';
+import PageMenu from './PageMenu';
 import PostList from '../components/PostList';
 import PageSideBar from '../components/PageSideBar';
 

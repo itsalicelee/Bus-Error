@@ -10,9 +10,6 @@ import PostSingleView from './container/PostSingleView';
 const LOCALSTORAGE_KEY = 'lsDarkMode';
 const lsDarkMode = localStorage.getItem(LOCALSTORAGE_KEY);
 
-// const colorAlgorithm = theme.defaultAlgorithm;
-// const colorAlgorithm = theme.darkAlgorithm;
-
 function App() {
     const [darkMode, setDarkMode] = useState(lsDarkMode === 'true' || false);
 
@@ -39,6 +36,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<PostListView />} />
                     <Route path="/posts" element={<PostListView />} />
+                    <Route path="/posts/tag/:tagName" element={<PostListView />} />
                     <Route path="/posts/:postId" element={<PostSingleView />} />
                 </Routes>
             </Router>
