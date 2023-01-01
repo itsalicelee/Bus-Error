@@ -5,7 +5,7 @@ import { Button, Typography, Switch } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import MyModal from '../components/MyModal';
+import PageModalSignin from './PageModalSignin';
 import BusErrorLogoDark from '../assets/BusErrorLogoDark.svg';
 import BusErrorLogoLight from '../assets/BusErrorLogoLight.svg';
 
@@ -67,7 +67,7 @@ function PageHeader(props) {
                 <Button type="text">標籤</Button>
                 <Button type="primary" shape="round" onClick={showModal}>登入 / 註冊</Button>
             </Container>
-            <MyModal isModalOpen={isModalOpen} onCancel={handleCancel} />
+            <PageModalSignin isModalOpen={isModalOpen} onCancel={handleCancel} />
         </Header>
     );
 }

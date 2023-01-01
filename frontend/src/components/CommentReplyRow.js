@@ -73,7 +73,7 @@ function CommentReplyRow(props) {
                     <div />
                     <div>
                         <Button style={{ marginRight: 12 }} onClick={onCancelReply}>取消</Button>
-                        <Button type="primary" onClick={onClickShowPreviewModal}>預覽/發表</Button>
+                        <Button type="primary" onClick={onClickShowPreviewModal}>預覽 / 發表</Button>
                     </div>
                 </ActionContainer>
             </MainContainer>
