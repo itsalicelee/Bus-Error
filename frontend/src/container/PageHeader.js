@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Input from 'antd/es/input/Input';
-import { Button, Typography, Switch } from 'antd';
+import { Button, Typography, theme } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 import PageModalSignin from './ModalSignin';
 import BusErrorLogoDark from '../assets/BusErrorLogoDark.svg';
 import BusErrorLogoLight from '../assets/BusErrorLogoLight.svg';
 
 const { Title } = Typography;
+const { useToken } = theme;
 
 // components
 const Header = styled.header`
@@ -40,6 +43,7 @@ const HeaderHomeContainer = styled(Title)`
 function PageHeader(props) {
     const { darkMode, handleThemeChange } = props;
     document.body.style.backgroundColor = (!darkMode) ? '#FAFAFA' : '#050505';
+    const { token } = useToken();
 
     // Modal
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,9 +66,9 @@ function PageHeader(props) {
             </HeaderHomeContainer>
             <Input placeholder="搜尋" style={{ maxWidth: 500, flex: 1 }} />
             <Container>
-                <Switch checked={darkMode} onChange={onThemeChange} />
-                <Button type="text">問題</Button>
-                <Button type="text">標籤</Button>
+                <Button onClick={onThemeChange} type="text" shape="circle" style={{ marginRight: 8, color: token.colorTextTertiary }}>
+                    <FontAwesomeIcon icon={(darkMode) ? faMoon : faSun} />
+                </Button>
                 <Button type="primary" shape="round" onClick={showModal}>登入 / 註冊</Button>
             </Container>
             <PageModalSignin isModalOpen={isModalOpen} onCancel={handleCancel} />
