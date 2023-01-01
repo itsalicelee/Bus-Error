@@ -4,8 +4,8 @@ import { Tag, Typography, theme } from 'antd';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import DataContainerChild from './PostListRowSquare';
-import ContentPublishInfo from './ContentPublishInfo';
+import PostRowData from './PostRowData';
+import PublishInfo from './PublishInfo';
 
 const { Paragraph, Title } = Typography;
 const { useToken } = theme;
@@ -32,9 +32,9 @@ function PostListRow(props) {
     return (
         <Container style={{ borderBottomColor: token.colorBorder }}>
             <DataContainer style={{ margin: '0 8px 0 -4px' }}>
-                <DataContainerChild name="評分" type="0" value={postItem.post_rates} />
-                <DataContainerChild name="回答" type="1" value={postItem.post_commentCount} fill={postItem.post_commentHasAdopt} />
-                <DataContainerChild name="閱覽" type="0" value={postItem.post_views} />
+                <PostRowData name="評分" type="0" value={postItem.post_rates} />
+                <PostRowData name="回答" type="1" value={postItem.post_commentCount} fill={postItem.post_commentHasAdopt} />
+                <PostRowData name="閱覽" type="0" value={postItem.post_views} />
             </DataContainer>
             <ContentContainer style={{ flex: 1 }}>
                 <Link to={`/posts/${postItem.post_id}`}>
@@ -53,7 +53,7 @@ function PostListRow(props) {
                             </Tag>
                         ))}
                     </div>
-                    <ContentPublishInfo actionText="提問於" date={postItem.post_createdAt} username={postItem.post_author.user_name} />
+                    <PublishInfo actionText="提問於" date={postItem.post_createdAt} username={postItem.post_author.user_name} />
                 </div>
             </ContentContainer>
         </Container>

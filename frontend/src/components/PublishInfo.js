@@ -10,7 +10,7 @@ import { UserOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
-function ContentPublishInfo(props) {
+function PublishInfo(props) {
     const { username, date, actionText } = props;
 
     return (
@@ -41,10 +41,10 @@ function ContentPublishInfo(props) {
     );
 }
 
-ContentPublishInfo.propTypes = {
+PublishInfo.propTypes = {
     username: PropTypes.string.isRequired,
     date: PropTypes.number.isRequired,
     actionText: PropTypes.string.isRequired,
 };
 
-export default ContentPublishInfo;
+export default PublishInfo;

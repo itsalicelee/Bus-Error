@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import PageHeader from './container/PageHeader';
 import PageMenu from './container/PageMenu';
-import PageSideBar from './components/PageSideBar';
+import PageSideBar from './container/PageSideBar';
 import PostListView from './container/PostListView';
 import PostSingleView from './container/PostSingleView';
 
@@ -40,6 +40,7 @@ function App() {
                 token: { colorPrimary: gold.primary, fontFamily: fontConfig, isDarkMode: darkMode },
                 algorithm: (darkMode) ? theme.darkAlgorithm : theme.defaultAlgorithm,
             }}
+            autoInsertSpaceInButton={false}
         >
             <Router>
                 <PageHeader darkMode={darkMode} handleThemeChange={handleThemeChange} />
