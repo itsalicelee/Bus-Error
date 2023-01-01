@@ -1,4 +1,12 @@
-// General
+/*
+    Usage:
+
+    import MarkdownContainer from ...;
+
+    <MarkdownContainer>
+        { markdownString }
+    </MarkdownContainer>
+ */
 import { React } from 'react';
 import { theme } from 'antd';
 import styled from 'styled-components';
