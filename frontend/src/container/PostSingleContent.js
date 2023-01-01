@@ -1,17 +1,13 @@
-// General
 import { React } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 // Ant Design
-import { Typography, Button, Tag, Avatar, theme } from 'antd'; /* eslint-disable-line */
-
-// FontAwesome Icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { Typography, Button, Tag, theme } from 'antd'; /* eslint-disable-line */
 
 import MarkdownContainer from '../components/MarkdownContainer';
-import ContentPublishInfo from '../components/ContentPublishInfo';
+import PublishInfo from '../components/PublishInfo';
+import VoteButton from '../components/VoteButton';
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
@@ -79,11 +75,13 @@ function PostSingleContent(props) {
             </PostContentContainer>
             <PostActionContainer style={{ borderTopColor: token.colorBorder }}>
                 <div style={{ marginLeft: -6 }}>
-                    <Button type="text" shape="circle" style={{ fontSize: 16, paddingTop: 3, color: '#8C8C8C' }}><FontAwesomeIcon icon={faArrowUp} /></Button>
-                    <Button type="text" shape="circle" style={{ fontSize: 16, paddingTop: 3, color: '#8C8C8C' }}><FontAwesomeIcon icon={faArrowDown} /></Button>
-                    <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>16</Text>
+                    <VoteButton type="up" checked={postData.post_userLiked} />
+                    <VoteButton type="down" checked={postData.post_userDisliked} />
+                    <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>
+                        { postData.post_like - postData.post_dislike }
+                    </Text>
                 </div>
-                <ContentPublishInfo actionText="提問於" date={postData.post_createdAt} username={postData.post_author.user_name} />
+                <PublishInfo actionText="提問於" date={postData.post_createdAt} username={postData.post_author.user_name} />
             </PostActionContainer>
         </PostContainer>
     );

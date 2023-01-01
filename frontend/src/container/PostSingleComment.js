@@ -3,12 +3,9 @@ import { React, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-// Ant Design
 import { Typography, Button, theme, Radio } from 'antd'; /* eslint-disable-line */
-
-// // FontAwesome Icons
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import CommentRow from '../components/CommentRow';
+import CommentReplyRow from '../components/CommentReplyRow';
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -29,53 +26,78 @@ const CommentHeadContainer = styled.div`
 
 const CommentList = styled.ul`
     margin: 0;
-`;
-
-const CommentItem = styled.li`
-    list-style: none;
-    padding: 16px 0;
-    margin: 0 20px;
+    padding: 0;
 `;
 
 function PostSingleComment(props) {
     const { token } = useToken();
-    const { postData } = props;   /* eslint-disable-line */
-
+    const { postComments } = props;
     const [commentSortValue, setCommentSortValue] = useState(0);
+    const [showReplySlot, setShowReplySlot] = useState(false);
+
     const onCommentSortChange = ({ target: { value } }) => {
         setCommentSortValue(value);
     };
+
+    const onToReply = () => setShowReplySlot(true);
+
+    const onCancelReply = () => setShowReplySlot(false);
+
     const commentSortOptions = [
         { label: '最高分', value: 0 },
         { label: '最新', value: 1 },
     ];
 
+    const commentSortFuncs = [
+        (a, b) => (a.comment_createdAt - b.comment_createdAt),
+        (a, b) => (a.comment_like - a.comment_dislike - b.comment_like + b.comment_dislike),
+    ];
+
     return (
         <CommentWrapper style={{ background: token.colorBgContainer }}>
-            <CommentHeadContainer style={{ borderBottomColor: token.colorBorder }}>
-                <Text style={{ fontSize: 16 }}>共有 6 則留言</Text>
+            <CommentHeadContainer style={{ borderBottomColor: (postComments.length) ? token.colorBorder : '#FFFFFF00' }}>
+                <Text style={{ fontSize: 16 }}>
+                    { postComments.length ? `共有 ${postComments.length} 則留言` : '暫時沒有留言' }
+                </Text>
                 <div>
-                    <Radio.Group
-                        options={commentSortOptions}
-                        onChange={onCommentSortChange}
-                        value={commentSortValue}
-                        optionType="button"
-                        style={{ marginRight: 12 }}
-                    />
-                    <Button type="primary">發表回答</Button>
+                    { postComments.length ? (
+                        <Radio.Group
+                            options={commentSortOptions}
+                            onChange={onCommentSortChange}
+                            value={commentSortValue}
+                            optionType="button"
+                            style={{ marginRight: 12 }}
+                        />
+                    ) : '' }
+                    <Button type="primary" onClick={onToReply} disabled={showReplySlot}>發表回答</Button>
                 </div>
             </CommentHeadContainer>
             <CommentList>
-                <CommentItem style={{ background: token.colorBgContainer }}>
-                    {/* 1 */}
-                </CommentItem>
+                { showReplySlot && (
+                    <CommentReplyRow onCancelReply={onCancelReply} />
+                )}
+                { postComments.length > 0 && (
+                    postComments
+                        .filter((e) => e.comment_adopt)
+                        .map((postComment) => (
+                            <CommentRow key={postComment.comment_id} commentData={postComment} />
+                        ))
+                )}
+                { postComments.length > 0 && (
+                    postComments
+                        .filter((e) => !e.comment_adopt)
+                        .sort(commentSortFuncs[commentSortValue])
+                        .map((postComment) => (
+                            <CommentRow key={postComment.comment_id} commentData={postComment} />
+                        ))
+                )}
             </CommentList>
         </CommentWrapper>
     );
 }
 
 PostSingleComment.propTypes = {
-    postData: PropTypes.object.isRequired,      /* eslint-disable-line */
+    postComments: PropTypes.array.isRequired,      /* eslint-disable-line */
 };
 
 export default PostSingleComment;
