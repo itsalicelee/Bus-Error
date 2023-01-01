@@ -5,7 +5,7 @@ import { Button, Typography, Switch } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import PageModalSignin from './PageModalSignin';
+import PageModalSignin from './ModalSignin';
 import BusErrorLogoDark from '../assets/BusErrorLogoDark.svg';
 import BusErrorLogoLight from '../assets/BusErrorLogoLight.svg';
 
