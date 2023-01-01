@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import axios from '../api';
 import PostRow from '../components/PostRow';
+import ModalAsk from './ModalAsk';
 
 const { Text } = Typography;
 const { useToken } = theme;
@@ -49,7 +50,6 @@ function PostListView() {
                 setpostKeywordType('標籤');
                 setPostKeyword('全部');
             }
-            console.log('REFRESHED');
         });
     }, [location.pathname]);
 
@@ -63,8 +63,18 @@ function PostListView() {
         ));
     }, [postItems]);
 
+    // Modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <Container style={{ background: token.colorBgContainer }}>
+            <ModalAsk isModalOpen={isModalOpen} onCancel={handleCancel} />
             <Text style={{ ...tabSideStyle, left: 20, lineHeight: '50px' }}>
                 <Text type="secondary">
                     { postKeywordType }
@@ -72,7 +82,7 @@ function PostListView() {
                 </Text>
                 <Text strong>{ postKeyword }</Text>
             </Text>
-            <Button type="primary" style={{ ...tabSideStyle, right: 20, top: 9 }}>問問題</Button>
+            <Button type="primary" style={{ ...tabSideStyle, right: 20, top: 9 }} onClick={showModal}>問問題</Button>
             <Tabs
                 defaultActiveKey="recent"
                 centered

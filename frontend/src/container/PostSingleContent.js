@@ -1,4 +1,4 @@
-import { React } from 'react';
+import { React, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -8,6 +8,7 @@ import { Typography, Button, Tag, theme } from 'antd'; /* eslint-disable-line */
 import MarkdownContainer from '../components/MarkdownContainer';
 import PublishInfo from '../components/PublishInfo';
 import VoteButton from '../components/VoteButton';
+import ModalAsk from './ModalAsk';
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
@@ -55,12 +56,22 @@ function PostSingleContent(props) {
     const { token } = useToken();
     const { postData } = props;
 
+    // Modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <PostContainer style={{ background: token.colorBgContainer }}>
+            <ModalAsk isModalOpen={isModalOpen} onCancel={handleCancel} />
             <PostHeadContainer style={{ borderBottomColor: token.colorBorder }}>
                 <TitleContainer>
                     <PostTitle>{postData.post_topic}</PostTitle>
-                    <Button type="primary">問問題</Button>
+                    <Button type="primary" onClick={showModal}>問問題</Button>
                 </TitleContainer>
                 <div>
                     <Tag color="gold">C / UNIX</Tag>
