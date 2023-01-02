@@ -2,17 +2,69 @@ import Comment from '../models/comment';
 
 exports.CreateComment = async (req, res) => {
     const body = req.body;
-    const { id, content, author, postId } = body;
+    const { content, author, postId } = body;
 
     try {
         const comment = new Comment({
             id: id,
             content: content,
             author: author,
-            postId: postId,
+            likes: [],
+            dislikes: [] 
         });
         await comment.save();
         res.status(200).send({ message: 'success', contents: comment });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.UpdateCommentRating = async (req, res) => {
+    const body = req.body;
+    const { id, option, userId } = body;
+
+    try {
+        if (option > 0) {
+            const comment = await Comment.findOneAndUpdate(
+                { id: id },
+                {   
+                    $push: {
+                        'dislikes': userId
+                    },
+                    $pull: {
+                        likes: userId
+                    }
+                }
+            );
+            res.status(200).send({ message: 'success', contents: comment });
+        }
+        else if (option < 0) {
+            array = (post.dislikes.indexOf(id) === -1) ? post.dislikes : post.dislikes.slice(post.dislikes.indexOf(id));
+            const comment = await Comment.findOneAndUpdate(
+                { id: id },
+                {   
+                    $push: {
+                        'likes': userId
+                    },
+                    $pull: {
+                        dislikes: userId
+                    }
+                }
+            );
+            res.status(200).send({ message: 'success', contents: comment });
+        }
+        else {
+            const comment = await Comment.findOneAndUpdate(
+                { id: id },
+                {   
+                    $pull: {
+                        likes: userId,
+                        dislikes: userId
+                    }
+                }
+            );
+            res.status(200).send({ message: 'success', contents: comment });
+        }
     } catch (err) {
         console.log(err);
     }

@@ -6,19 +6,15 @@ const CommentSchema = Schema(
     {
         /* Required */
         id: { type: Number, required: true },
+        adopted: { type: Boolean, default: false },
         content: { type: String, required: true },
         author: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
-        postId: { type: mongoose.Types.ObjectId, required: true, ref: 'Post' },
-
-        /* Not Required */
-        parentId: { type: mongoose.Types.ObjectId, required: true, ref: 'Comment' },
-        adopted: { type: Boolean },
         likes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
         dislikes: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+        createdAt: { type: Date, default: Date.now }
     },
     {
         collection: 'Comment',
-        timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     }
 );
 
