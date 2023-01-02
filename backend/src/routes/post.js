@@ -31,8 +31,8 @@ exports.GetPostList = async (req, res) => {
         const returnObject = {
             totalPage: totalPage,
             mainTag: {
-                tag_identifier: String,
-                tag_displayName: String,
+                tag_identifier: tag,
+                tag_displayName: tag,
             },
             posts: data,
         };
