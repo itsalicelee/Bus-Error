@@ -1,4 +1,5 @@
 import Comment from '../models/comment';
+import Post from '../models/post'
 
 exports.CreateComment = async (req, res) => {
     const body = req.body;
@@ -13,6 +14,15 @@ exports.CreateComment = async (req, res) => {
             dislikes: [] 
         });
         await comment.save();
+
+        const post = await Post.findOneAndUpdate(
+            {id: postId},
+            {
+                $push: {
+                    comment: id
+                }
+            }
+        )
         res.status(200).send({ message: 'success', contents: comment });
     } catch (err) {
         console.log(err);
@@ -29,7 +39,7 @@ exports.UpdateCommentRating = async (req, res) => {
                 { id: id },
                 {   
                     $push: {
-                        'dislikes': userId
+                        dislikes: userId
                     },
                     $pull: {
                         likes: userId
@@ -44,7 +54,7 @@ exports.UpdateCommentRating = async (req, res) => {
                 { id: id },
                 {   
                     $push: {
-                        'likes': userId
+                        likes: userId
                     },
                     $pull: {
                         dislikes: userId
