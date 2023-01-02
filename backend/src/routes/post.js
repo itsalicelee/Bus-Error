@@ -21,7 +21,7 @@ exports.CreatePost = async (req, res) => {
 
 exports.GetPostList = async (req, res) => {
     const tag = req.query.tag;
-    Post.find({ tag: tag }).exec((err, data) => {
+    Post.find({ post_tags: tag }).exec((err, data) => {
         const post_per_page = 10; // default:  10 posts in a page
         const totalPage = data.length / post_per_page;
 
@@ -31,8 +31,8 @@ exports.GetPostList = async (req, res) => {
         const returnObject = {
             totalPage: totalPage,
             mainTag: {
-                tag_identifier: String,
-                tag_displayName: String,
+                tag_identifier: tag,
+                tag_displayName: tag,
             },
             posts: data,
         };
@@ -50,7 +50,7 @@ exports.GetPostList = async (req, res) => {
 
 exports.GetSinglePost = async (req, res) => {
     const id = req.query.id;
-    Post.find({ id: id }).exec((err, data) => {
+    Post.find({ post_id: id }).exec((err, data) => {
         if (err) {
             res.status(403).send({ message: 'error', contents: [] });
         } else {
