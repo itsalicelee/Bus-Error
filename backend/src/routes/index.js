@@ -10,15 +10,17 @@ const wrap =
 function main(app) {
     /* User Route */
     app.post('/api/v1/createUser', wrap(userRoute.CreateUser));
-    app.get('/api/v1/getUser', wrap(userRoute.GetUser));
     /* Post Route */
+    app.get('/api/v1/getPostList', wrap(postRoute.GetPostList));
+    app.get('/api/v1/getSinglePost', wrap(postRoute.GetSinglePost));
     app.post('/api/v1/createPost', wrap(postRoute.CreatePost));
-    app.get('/api/v1/getPost', wrap(postRoute.GetPost));
-    app.get('/api/v1/updatePost', wrap(postRoute.UpdatePost));
+    app.post('/api/v1/updatePostRating', wrap(postRoute.UpdatePostRating));
+    // app.get('/api/v1/updatePost', wrap(postRoute.UpdatePost));
     /* Comment Route */
     app.post('/api/v1/createComment', wrap(commentRoute.CreateComment));
-    app.get('/api/v1/updateComment', wrap(commentRoute.UpdateComment));
-    app.get('/api/v1/deleteComment', wrap(commentRoute.DeleteComment));
+    app.post('/api/v1/updateCommentRating', wrap(commentRoute.UpdateCommentRating));
+    // app.get('/api/v1/updateComment', wrap(commentRoute.UpdateComment));
+    // app.get('/api/v1/deleteComment', wrap(commentRoute.DeleteComment));
     
 }
 
