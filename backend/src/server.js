@@ -6,6 +6,8 @@ import routes from './routes';
 require('dotenv').config();
 const app = express();
 
+mongoose.set('strictQuery', false);
+
 // init middleware
 app.use(cors());
 app.use(express.json());
