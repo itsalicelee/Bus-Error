@@ -7,7 +7,7 @@ const PostSchema = Schema(
         /* Required */
         id: { type: Number, required: true },
         author: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },
-        tag: { type: String, required: true },
+        tag: [{ type: String, required: true }],
         topic: { type: String, required: true },
         content: { type: String, required: true },
 
