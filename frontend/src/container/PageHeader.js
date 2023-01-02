@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Input from 'antd/es/input/Input';
 import { Button, Typography, theme } from 'antd';
@@ -7,7 +7,10 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
-import PageModalSignin from './ModalSignin';
+// import '../GoogleSigninBtn.css';
+
+import useFetch from '../hooks/useFetch';
+
 import BusErrorLogoDark from '../assets/BusErrorLogoDark.svg';
 import BusErrorLogoLight from '../assets/BusErrorLogoLight.svg';
 
@@ -31,6 +34,7 @@ const Container = styled.div`
     flex: 1;
     flex-shrink: 0;
     justify-content: flex-end;
+    align-items: center;
 }`;
 
 const HeaderHomeContainer = styled(Title)`
@@ -40,22 +44,49 @@ const HeaderHomeContainer = styled(Title)`
     display: flex;
 `;
 
+const SignInButton = styled.div`
+    > div > div:first-child,
+    > div > div:last-child {
+        display: none;
+    }
+`;
+
 function PageHeader(props) {
     const { darkMode, handleThemeChange } = props;
-    document.body.style.backgroundColor = (!darkMode) ? '#FAFAFA' : '#050505';
     const { token } = useToken();
+    document.body.style.backgroundColor = (!darkMode) ? '#FAFAFA' : '#050505';
+    const onThemeChange = () => handleThemeChange();
 
-    // Modal
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-    const onThemeChange = () => {
-        handleThemeChange();
-    };
+    const [signInStage, setSignInStage] = useState(0);
+
+    const { handleGoogle } = useFetch('http://localhost:5152/signup');
+
+    useEffect(() => {
+        if (window.google) {
+            window.google.accounts.id.initialize({
+                client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+                callback: handleGoogle,
+            });
+            window.google.accounts.id.renderButton(document.getElementById('sign-in-btn'), {
+                theme: darkMode ? 'filled_black' : 'outline',
+                locale: 'zh_TW',
+                shape: 'pill',
+                size: 'medium',
+            });
+        }
+    }, [handleGoogle]);
+
+    const onSignInBtnClick = () => setSignInStage(signInStage + 1);
+
+    let cleaningTimeout;
+    useEffect(() => {
+        if (signInStage === 1) {
+            cleaningTimeout = setTimeout(() => setSignInStage(0), 5000);
+        } else {
+            // Sign In Here
+        }
+        return () => clearTimeout(cleaningTimeout);
+    }, [signInStage]);
 
     return (
         <Header>
@@ -69,9 +100,13 @@ function PageHeader(props) {
                 <Button onClick={onThemeChange} type="text" shape="circle" style={{ marginRight: 8, color: token.colorTextTertiary }}>
                     <FontAwesomeIcon icon={(darkMode) ? faMoon : faSun} />
                 </Button>
-                <Button type="primary" shape="round" onClick={showModal}>登入 / 註冊</Button>
+                {(signInStage === 0)
+                    ? (
+                        <Button type="primary" shape="round" onClick={onSignInBtnClick}>登入</Button>
+                    ) : (
+                        <SignInButton id="sign-in-btn" data-text="signup_with" />
+                    )}
             </Container>
-            <PageModalSignin isModalOpen={isModalOpen} onCancel={handleCancel} />
         </Header>
     );
 }
