@@ -11,7 +11,7 @@ import PostSingleComment from './PostSingleComment';
 const MainContainer = styled.div`
     flex: 1;
     margin: 0 16px;
-    padding-bottom: 20px;
+    padding-bottom: 32px;
 `;
 
 function PostListView() {
@@ -19,9 +19,14 @@ function PostListView() {
     const [postData, setPostData] = useState({});
 
     useEffect(() => {
-        axios.get('/post-1').then((res) => {
-            setPostData(res.data.post);
-        });
+        axios
+            .get('/GetSinglePost', {
+                params: { postId },
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            })
+            .then((res) => {
+                setPostData(res.data.contents[0]);
+            });
     }, [postId]);
 
     return (

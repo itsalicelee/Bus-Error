@@ -25,12 +25,12 @@ const DataContainer = styled.div``;
 
 const ContentContainer = styled.div``;
 
-function PostListRow(props) {
+function PostRow(props) {
     const { token } = useToken();
     const { postItem } = props;
 
     return (
-        <Container style={{ borderBottomColor: token.colorBorder }}>
+        <Container style={{ borderBottomColor: token.colorBorder }} key={postItem.post_id}>
             <DataContainer style={{ margin: '0 8px 0 -4px' }}>
                 <PostRowData name="評分" type="0" value={postItem.post_rates} />
                 <PostRowData name="回答" type="1" value={postItem.post_commentCount} fill={postItem.post_commentHasAdopt} />
@@ -39,7 +39,7 @@ function PostListRow(props) {
             <ContentContainer style={{ flex: 1 }}>
                 <Link to={`/posts/${postItem.post_id}`}>
                     <Title level={2} style={{ fontSize: 18, marginBottom: 0 }}>
-                        { postItem.post_topic }
+                        { postItem.post_title }
                     </Title>
                     <Paragraph ellipsis={{ rows: 2 }} type="secondary" style={{ marginTop: 4, marginBottom: 10 }}>
                         { postItem.post_sbody }
@@ -47,6 +47,11 @@ function PostListRow(props) {
                 </Link>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
+                        { postItem.post_topic && (
+                            <Tag key={postItem.post_topic.tag_displayName}>
+                                {postItem.post_topic.tag_displayName}
+                            </Tag>
+                        )}
                         { postItem.post_tags && postItem.post_tags.map((postTag) => (
                             <Tag key={postTag.tag_displayName}>
                                 {postTag.tag_displayName}
@@ -60,8 +65,8 @@ function PostListRow(props) {
     );
 }
 
-PostListRow.propTypes = {
+PostRow.propTypes = {
     postItem: PropTypes.object.isRequired,      /* eslint-disable-line */
 };
 
-export default PostListRow;
+export default PostRow;

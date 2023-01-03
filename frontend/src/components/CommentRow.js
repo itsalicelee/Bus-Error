@@ -68,7 +68,7 @@ function CommentRow(props) {
             <VoteContainer>
                 <VoteButton type="up" checked={commentData.comment_userLiked} />
                 <Text style={{ fontSize: 16, lineHeight: 2, color: colorText }}>
-                    { commentData.comment_like - commentData.comment_dislike }
+                    { commentData.likes.length - commentData.dislikes.length }
                 </Text>
                 <VoteButton type="down" checked={commentData.comment_userDisliked} />
             </VoteContainer>
@@ -80,11 +80,11 @@ function CommentRow(props) {
                     </AdoptBadge>
                 )}
                 <MarkdownContainer>
-                    {commentData.comment_body}
+                    {commentData.content}
                 </MarkdownContainer>
                 <ActionContainer>
                     <div />
-                    <PublishInfo actionText="回答於" date={commentData.comment_createdAt} username={commentData.comment_author.user_name} />
+                    <PublishInfo actionText="回答於" date={commentData.createdAt} username={commentData.author.user_name} />
                 </ActionContainer>
             </MainContainer>
         </Container>

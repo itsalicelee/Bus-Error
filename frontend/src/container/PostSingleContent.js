@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 // Ant Design
-import { Typography, Button, Tag, theme } from 'antd'; /* eslint-disable-line */
+import { Typography, Button, Tag, theme, message } from 'antd'; /* eslint-disable-line */
 
 import MarkdownContainer from '../components/MarkdownContainer';
 import PublishInfo from '../components/PublishInfo';
 import VoteButton from '../components/VoteButton';
-import ModalAsk from './ModalAsk';
+import ModalCreatePost from './ModalCreatePost';
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
@@ -65,18 +65,37 @@ function PostSingleContent(props) {
         setIsModalOpen(false);
     };
 
+    // Message
+    const [messageApi, contextHolder] = message.useMessage();
+    const onSubmitSuccess = () => {
+        messageApi.open({ type: 'success', content: '提問成功' });
+        setIsModalOpen(false);
+    };
+
     return (
         <PostContainer style={{ background: token.colorBgContainer }}>
-            <ModalAsk isModalOpen={isModalOpen} onCancel={handleCancel} />
+            {contextHolder}
+            <ModalCreatePost
+                isModalOpen={isModalOpen}
+                onCancel={handleCancel}
+                onSubmitSuccess={onSubmitSuccess}
+            />
             <PostHeadContainer style={{ borderBottomColor: token.colorBorder }}>
                 <TitleContainer>
-                    <PostTitle>{postData.post_topic}</PostTitle>
+                    <PostTitle>{postData.post_title}</PostTitle>
                     <Button type="primary" onClick={showModal}>問問題</Button>
                 </TitleContainer>
                 <div>
-                    <Tag color="gold">C / UNIX</Tag>
-                    <Tag>SUID</Tag>
-                    <Tag>EUID</Tag>
+                    { postData.post_topic && (
+                        <Tag color="gold" key={postData.post_topic.tag_displayName}>
+                            {postData.post_topic.tag_displayName}
+                        </Tag>
+                    )}
+                    { postData.post_tags && postData.post_tags.map((postTag) => (
+                        <Tag key={postTag.tag_displayName}>
+                            {postTag.tag_displayName}
+                        </Tag>
+                    ))}
                 </div>
             </PostHeadContainer>
             <PostContentContainer>
@@ -89,7 +108,7 @@ function PostSingleContent(props) {
                     <VoteButton type="up" checked={postData.post_userLiked} />
                     <VoteButton type="down" checked={postData.post_userDisliked} />
                     <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>
-                        { postData.post_like - postData.post_dislike }
+                        { postData.post_rate }
                     </Text>
                 </div>
                 <PublishInfo actionText="提問於" date={postData.post_createdAt} username={postData.post_author.user_name} />

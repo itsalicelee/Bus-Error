@@ -15,21 +15,21 @@ const Menu = styled(AntdMenu)`
 function PageMenu() {
     const tagItems = useMenuData();
     const location = useLocation();
-    const [tagName, setTagName] = useState('');
+    const [topicName, setTopicName] = useState('');
 
     useEffect(() => {
         const match = matchPath(
-            { path: '/posts/tag/:tagName' },
+            { path: '/posts/topic/:topicName/*' },
             location.pathname,
         );
-        setTagName((match) ? match.params.tagName : '');
+        setTopicName((match) ? match.params.topicName : '');
     }, [location]);
 
     return (
         <Menu
             items={tagItems}
             style={{ width: 200 }}
-            selectedKeys={[tagName]}
+            selectedKeys={[topicName]}
             mode="inline"
         />
     );
