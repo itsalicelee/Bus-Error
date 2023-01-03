@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const API_ROOT = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001';
+const API_ROOT = process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:4000/api/v1';
 
 const instance = axios.create({
     baseURL: API_ROOT,
+    timeout: 60000,
+    withCredentials: true,
 });
 
 export default instance;

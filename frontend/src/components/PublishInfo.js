@@ -43,7 +43,7 @@ function PublishInfo(props) {
 
 PublishInfo.propTypes = {
     username: PropTypes.string.isRequired,
-    date: PropTypes.number.isRequired,
+    date: PropTypes.string.isRequired,
     actionText: PropTypes.string.isRequired,
 };
 

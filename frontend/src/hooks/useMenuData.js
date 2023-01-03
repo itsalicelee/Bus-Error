@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from '../api';
 
 const tagChild = (identifier, displayName) => ({
-    label: <Link to={`/posts/tag/${identifier}`}>{ displayName }</Link>,
+    label: <Link to={`/posts/topic/${identifier}`}>{ displayName }</Link>,
     key: identifier,
 });
 
@@ -11,8 +11,8 @@ function useMenuData() {
     const [tagItems, setTagItems] = useState([]); // eslint-disable-line
 
     useEffect(() => {
-        axios.get('/tags').then((res) => {
-            const { following, trending } = res.data;
+        axios.get('/getMainTagList').then((res) => {
+            const { following, tags: trending } = res.data.contents;
             const preTagItems = [];
             if (following) {
                 preTagItems.push({ type: 'group', label: '追蹤中的主標籤', children: [] });
