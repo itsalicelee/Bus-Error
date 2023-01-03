@@ -1,6 +1,7 @@
 import commentRoute from './comment';
 import postRoute from './post';
 import userRoute from './user';
+import tagRoute from './tag';
 
 const wrap =
     (fn) =>
@@ -9,13 +10,19 @@ const wrap =
 
 function main(app) {
     /* User Route */
-    app.post('/api/v1/createUser', wrap(userRoute.CreateUser));
+    app.post('/api/v1/signInUser', wrap(userRoute.SignInUser));
+    // app.post('/api/v1/updateUser', wrap(userRoute.updateUser));
+
+    /* Tag Route */
+    app.get('/api/v1/getMainTagList', wrap(tagRoute.GetMainTagList));
+
     /* Post Route */
     app.get('/api/v1/getPostList', wrap(postRoute.GetPostList));
     app.get('/api/v1/getSinglePost', wrap(postRoute.GetSinglePost));
     app.post('/api/v1/createPost', wrap(postRoute.CreatePost));
     app.post('/api/v1/updatePostRating', wrap(postRoute.UpdatePostRating));
     // app.get('/api/v1/updatePost', wrap(postRoute.UpdatePost));
+
     /* Comment Route */
     app.post('/api/v1/createComment', wrap(commentRoute.CreateComment));
     app.post('/api/v1/updateCommentRating', wrap(commentRoute.UpdateCommentRating));
