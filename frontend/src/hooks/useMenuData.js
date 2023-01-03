@@ -15,8 +15,8 @@ function useMenuData() {
             const { following, tags: trending } = res.data.contents;
             const preTagItems = [];
             if (following) {
-                preTagItems.push({ type: 'group', label: '追蹤中的主標籤', children: [] });
-                preTagItems.push({ type: 'group', label: '熱門的主標籤', children: [] });
+                preTagItems.push({ type: 'group', label: '追蹤中的主題', children: [] });
+                preTagItems.push({ type: 'group', label: '熱門的主題', children: [] });
                 following.forEach((e) => {
                     preTagItems[0].children.push(tagChild(e.tag_identifier, e.tag_displayName));
                 });
@@ -27,7 +27,9 @@ function useMenuData() {
                         preTagItems[1].children.push(tagChild(e.tag_identifier, e.tag_displayName));
                     });
             } else {
-                preTagItems.push({ type: 'group', label: '熱門的主標籤', children: [] });
+                // preTagItems.push({ type: 'group', label: '熱門的主題', children: [] });
+                preTagItems.push({ type: 'group', label: '主題列表', children: [] });
+                preTagItems[0].children.push(tagChild('all', '所有主題'));
                 trending.forEach((e) => {
                     preTagItems[0].children.push(tagChild(e.tag_identifier, e.tag_displayName));
                 });
