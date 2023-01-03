@@ -34,7 +34,7 @@ function PostListView() {
             { postData.post_author ? (
                 <>
                     <PostSingleContent postData={postData} />
-                    <PostSingleComment postComments={postData.post_comment} />
+                    <PostSingleComment postComments={postData.post_comment} postId={postId} />
                 </>
             ) : ''}
         </MainContainer>

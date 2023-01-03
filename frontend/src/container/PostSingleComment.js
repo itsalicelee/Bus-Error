@@ -3,7 +3,7 @@ import { React, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { Typography, Button, theme, Radio } from 'antd'; /* eslint-disable-line */
+import { Typography, Button, theme, Radio, message  } from 'antd'; /* eslint-disable-line */
 import CommentRow from '../components/CommentRow';
 import CommentReplyRow from '../components/CommentReplyRow';
 
@@ -31,17 +31,28 @@ const CommentList = styled.ul`
 
 function PostSingleComment(props) {
     const { token } = useToken();
-    const { postComments } = props;
+    const { postComments: postCts, postId } = props;
     const [commentSortValue, setCommentSortValue] = useState(0);
     const [showReplySlot, setShowReplySlot] = useState(false);
+    const [postComments, setPostComments] = useState(postCts);/* eslint-disable-line */
 
     const onCommentSortChange = ({ target: { value } }) => {
         setCommentSortValue(value);
     };
 
     const onToReply = () => setShowReplySlot(true);
-
     const onCancelReply = () => setShowReplySlot(false);
+
+    // Message
+    const [messageApi, contextHolder] = message.useMessage();
+    const onSubmitSuccess = () => {
+        messageApi.open({ type: 'success', content: '留言成功' });
+        onCancelReply();
+    };
+
+    const onNewCommentReceive = (comment) => {
+        setPostComments([...postComments, comment]);
+    };
 
     const commentSortOptions = [
         { label: '最高分', value: 0 },
@@ -55,6 +66,7 @@ function PostSingleComment(props) {
 
     return (
         <CommentWrapper style={{ background: token.colorBgContainer }}>
+            {contextHolder}
             <CommentHeadContainer style={{ borderBottomColor: (postComments.length) ? token.colorBorder : '#FFFFFF00' }}>
                 <Text style={{ fontSize: 16 }}>
                     { postComments.length ? `共有 ${postComments.length} 則留言` : '暫時沒有留言' }
@@ -74,7 +86,12 @@ function PostSingleComment(props) {
             </CommentHeadContainer>
             <CommentList>
                 { showReplySlot && (
-                    <CommentReplyRow onCancelReply={onCancelReply} />
+                    <CommentReplyRow
+                        onCancelReply={onCancelReply}
+                        postId={postId}
+                        onSubmitSuccess={onSubmitSuccess}
+                        onNewCommentReceive={onNewCommentReceive}
+                    />
                 )}
                 { postComments.length > 0 && (
                     postComments
@@ -98,6 +115,7 @@ function PostSingleComment(props) {
 
 PostSingleComment.propTypes = {
     postComments: PropTypes.array.isRequired,      /* eslint-disable-line */
+    postId: PropTypes.string.isRequired,
 };
 
 export default PostSingleComment;
