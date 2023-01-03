@@ -1,31 +1,78 @@
+import mongoose from 'mongoose';
 import Comment from '../models/comment';
-import Post from '../models/post'
+import Post from '../models/post';
+import User from '../models/user';
+
+import { validateToken } from '../tools';
 
 exports.CreateComment = async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const { valid, userId, message } = validateToken(token);
+
     const body = req.body;
-    const { content, author, postId } = body;
+    const { content, postId } = body;
+
+    if (!valid) {
+        res.status(403).send({
+            message: 'error',
+            error: 'ERR_AUTH_NOSIGN',
+            detail: message,
+        });
+        return;
+    }
 
     try {
-        const comment = new Comment({
-            id: id,
-            content: content,
-            author: author,
-            likes: [],
-            dislikes: [] 
-        });
-        await comment.save();
-
-        const post = await Post.findOneAndUpdate(
-            {id: postId},
-            {
-                $push: {
-                    comment: id
-                }
+        const postRet = (await Post.exists({ _id: mongoose.Types.ObjectId(postId) }));
+        if (postRet) {
+            const comment = new Comment({
+                content: content,
+                author: mongoose.Types.ObjectId(userId),
+                likes: [],
+                dislikes: [] 
+            });
+            try {
+                await comment.save(async(_, ct) => {
+                    const post = Post.findOneAndUpdate(
+                        {_id: mongoose.Types.ObjectId(postId)},
+                        {
+                            $push: {
+                                post_comment: ct._id
+                            }
+                        },
+                        {},
+                        () => {}
+                    )
+                    const { _id: user_id, name: user_name } = await User.findOne({ _id: ct.author });
+                    let comment = JSON.parse(JSON.stringify(ct));
+                    comment.author = { user_id, user_name };
+                    comment.comment_id = comment._id;
+                    delete comment._id;
+                    res.status(200).send({ message: 'success', contents: comment });
+                });
             }
-        )
-        res.status(200).send({ message: 'success', contents: comment });
+            catch(err) {
+                console.log(err);
+                res.status(500).send({
+                    message: 'error',
+                    error: 'ERR_SERVER_DB',
+                    detail: err,
+                });
+            }
+            
+        } else {
+            res.status(403).send({
+                message: 'error',
+                error: 'ERR_POST_UNKNOWN',
+                detail: '',
+            });
+        }
     } catch (err) {
-        console.log(err);
+        console.log(err)
+        res.status(500).send({
+            message: 'error',
+            error: 'ERR_SERVER_DB',
+            detail: err,
+        });
     }
 };
 
