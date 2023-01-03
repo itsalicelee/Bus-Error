@@ -7,8 +7,6 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
-// import '../GoogleSigninBtn.css';
-
 import useFetch from '../hooks/useFetch';
 
 import BusErrorLogoDark from '../assets/BusErrorLogoDark.svg';
@@ -58,8 +56,9 @@ function PageHeader(props) {
     const onThemeChange = () => handleThemeChange();
 
     const [signInStage, setSignInStage] = useState(0);
+    const [user, setUser] = useState({});
 
-    const { handleGoogle } = useFetch('http://localhost:5152/signup');
+    const { handleGoogle } = useFetch();
 
     useEffect(() => {
         if (window.google) {
@@ -78,15 +77,28 @@ function PageHeader(props) {
 
     const onSignInBtnClick = () => setSignInStage(signInStage + 1);
 
-    let cleaningTimeout;
+    const onSignOutBtnClick = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.reload();
+    };
+
     useEffect(() => {
         if (signInStage === 1) {
-            cleaningTimeout = setTimeout(() => setSignInStage(0), 5000);
-        } else {
-            // Sign In Here
+            setTimeout(() => setSignInStage(0), 5000);
         }
-        return () => clearTimeout(cleaningTimeout);
     }, [signInStage]);
+
+    useEffect(() => { if (user?.email) setSignInStage(2); }, [user]);
+
+    useEffect(() => {
+        const theUser = localStorage.getItem('user');
+
+        if (theUser && !theUser.includes('undefined')) {
+            setUser(JSON.parse(theUser));
+            console.log(JSON.parse(theUser));
+        }
+    }, []);
 
     return (
         <Header>
@@ -100,12 +112,9 @@ function PageHeader(props) {
                 <Button onClick={onThemeChange} type="text" shape="circle" style={{ marginRight: 8, color: token.colorTextTertiary }}>
                     <FontAwesomeIcon icon={(darkMode) ? faMoon : faSun} />
                 </Button>
-                {(signInStage === 0)
-                    ? (
-                        <Button type="primary" shape="round" onClick={onSignInBtnClick}>登入</Button>
-                    ) : (
-                        <SignInButton id="sign-in-btn" data-text="signup_with" />
-                    )}
+                { (signInStage === 0) && (<Button type="primary" shape="round" onClick={onSignInBtnClick}>登入</Button>) }
+                { (signInStage === 1) && (<SignInButton id="sign-in-btn" data-text="signup_with" />) }
+                { (signInStage === 2) && (<Button type="primary" shape="round" onClick={onSignOutBtnClick}>登出</Button>) }
             </Container>
         </Header>
     );
