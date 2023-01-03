@@ -96,7 +96,6 @@ function PageHeader(props) {
 
         if (theUser && !theUser.includes('undefined')) {
             setUser(JSON.parse(theUser));
-            console.log(JSON.parse(theUser));
         }
     }, []);
 
