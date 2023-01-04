@@ -47,6 +47,11 @@ exports.CreateComment = async (req, res) => {
                     comment.author = { user_id, user_name };
                     comment.comment_id = comment._id;
                     delete comment._id;
+                    comment.comment_rate = 0;
+                    comment.comment_userLiked = false;
+                    comment.comment_userDisliked = false;
+                    delete comment.likes;
+                    delete comment.dislikes;
                     res.status(200).send({ message: 'success', contents: comment });
                 });
             }
@@ -77,54 +82,75 @@ exports.CreateComment = async (req, res) => {
 };
 
 exports.UpdateCommentRating = async (req, res) => {
-    const body = req.body;
-    const { id, option, userId } = body;
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const { valid, userId, message } = validateToken(token);
 
-    try {
-        if (option > 0) {
-            const comment = await Comment.findOneAndUpdate(
-                { id: id },
-                {   
-                    $push: {
-                        dislikes: userId
-                    },
-                    $pull: {
-                        likes: userId
-                    }
-                }
-            );
-            res.status(200).send({ message: 'success', contents: comment });
-        }
-        else if (option < 0) {
-            array = (post.dislikes.indexOf(id) === -1) ? post.dislikes : post.dislikes.slice(post.dislikes.indexOf(id));
-            const comment = await Comment.findOneAndUpdate(
-                { id: id },
-                {   
-                    $push: {
-                        likes: userId
-                    },
-                    $pull: {
-                        dislikes: userId
-                    }
-                }
-            );
-            res.status(200).send({ message: 'success', contents: comment });
-        }
-        else {
-            const comment = await Comment.findOneAndUpdate(
-                { id: id },
-                {   
-                    $pull: {
-                        likes: userId,
-                        dislikes: userId
-                    }
-                }
-            );
-            res.status(200).send({ message: 'success', contents: comment });
-        }
-    } catch (err) {
-        console.log(err);
+    const body = req.body;
+    const { commentId, option } = body;
+    
+    if (!valid) {
+        res.status(403).send({
+            message: 'error',
+            error: 'ERR_AUTH_NOSIGN',
+            detail: message,
+        });
+        return;
     }
+
+    if (!commentId) {
+        res.status(422).send({
+            message: 'error',
+            error: 'ERR_NOINPUT',
+            detail: 'POSTID',
+        });
+        return;
+    }
+
+    if (isNaN(parseInt(option)) || ![-1, 0, 1].includes(parseInt(option))) {
+        res.status(422).send({
+            message: 'error',
+            error: 'ERR_NOINPUT',
+            detail: 'OPTION',
+        });
+        return;
+    }
+
+    const optionNew = parseInt(option) + 1;
+        
+    const updateOption = [{
+        $addToSet: { dislikes: mongoose.Types.ObjectId(userId) },
+        $pull: { likes: mongoose.Types.ObjectId(userId) },
+    }, {
+        $pull: {
+            likes: mongoose.Types.ObjectId(userId),
+            dislikes: mongoose.Types.ObjectId(userId),
+        },
+    }, {
+        $addToSet: { likes: mongoose.Types.ObjectId(userId) },
+        $pull: { dislikes: mongoose.Types.ObjectId(userId) },
+    }];
+
+    Comment.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(commentId) }, updateOption[optionNew], { new: true },
+        (err, doc) => {
+            if (err) {
+                res.status(500).send({
+                    message: 'error',
+                    error: 'ERR_SERVER_DB',
+                    detail: err,
+                });
+            } else {
+                res.status(200).send({
+                    message: 'success',
+                    contents: {
+                        comment_userLiked: (valid) && (JSON.parse(JSON.stringify(doc.likes)).indexOf(userId) >= 0),
+                        comment_userDisliked: (valid) && (JSON.parse(JSON.stringify(doc.dislikes)).indexOf(userId) >= 0),
+                        comment_rate: doc.likes.length - doc.dislikes.length,
+                    },
+                });
+            }
+        }
+    );
 };
 
 exports.UpdateComment = async (req, res) => {

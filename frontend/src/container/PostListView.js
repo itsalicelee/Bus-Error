@@ -42,17 +42,23 @@ function PostListView() {
     const [postKeyword, setPostKeyword] = useState('全部');
     const [params, setParams] = useState({});
     const [reloadFlipFlop, setReloadFlipFlop] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const orders = ['newest', 'hottest', 'unsolved'];
     const navigate = useNavigate();
 
     // Modal
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => setIsModalOpen(true);
+    const showModal = () => {
+        if (localStorage.getItem('token')) {
+            setIsModalOpen(true);
+        } else {
+            messageApi.open({ type: 'warning', content: '登入之後才能提問' });
+        }
+    };
     const handleCancel = () => setIsModalOpen(false);
 
     // Message
-    const [messageApi, contextHolder] = message.useMessage();
     const onSubmitSuccess = () => {
         messageApi.open({ type: 'success', content: '提問成功' });
         setIsModalOpen(false);

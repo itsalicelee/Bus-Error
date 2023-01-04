@@ -9,6 +9,7 @@ import MarkdownContainer from '../components/MarkdownContainer';
 import PublishInfo from '../components/PublishInfo';
 import VoteButton from '../components/VoteButton';
 import ModalCreatePost from './ModalCreatePost';
+import axios from '../api';
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
@@ -56,20 +57,64 @@ function PostSingleContent(props) {
     const { token } = useToken();
     const { postData } = props;
 
-    // Modal
+    // Modal & Message
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    // Message
     const [messageApi, contextHolder] = message.useMessage();
+
     const onSubmitSuccess = () => {
         messageApi.open({ type: 'success', content: '提問成功' });
         setIsModalOpen(false);
+    };
+
+    const showModal = () => {
+        if (localStorage.getItem('token')) {
+            setIsModalOpen(true);
+        } else {
+            messageApi.open({ type: 'warning', content: '登入之後才能提問' });
+        }
+    };
+
+    const handleCancel = () => setIsModalOpen(false);
+
+    const [userLiked, setUserLiked] = useState(postData.post_userLiked);
+    const [userDisliked, setUserDisliked] = useState(postData.post_userDisliked);
+    const [rate, setRate] = useState(postData.post_rate);
+
+    const onVoteButtonClick = (dir) => {
+        if (localStorage.getItem('token')) {
+            axios
+                .post('/updatePostRating', {
+                    option: ((userLiked && dir === 'up') || (userDisliked && dir === 'down')) ? 0 : (dir === 'up') ? 1 : -1,  /* eslint-disable-line */
+                    postId: postData.post_id,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                .then((res) => {
+                    const content = res.data.contents;
+                    setUserLiked(content.post_userLiked);
+                    setUserDisliked(content.post_userDisliked);
+                    setRate(content.post_rate);
+                })
+                .catch((err) => {
+                    switch (err.response.data.error) {
+                    case 'ERR_AUTH_NOSIGN':
+                        messageApi.open({ type: 'error', content: '請先登入', duration: 5 });
+                        break;
+                    case 'ERR_NOINPUT':
+                        messageApi.open({ type: 'error', content: '錯誤！請重新整理後再重試。', duration: 5 });
+                        break;
+                    case 'ERR_SERVER_DB':
+                        messageApi.open({ type: 'error', content: '系統無法處理您的請求，請檢查請求內容或稍候再試。', duration: 5 });
+                        break;
+                    default:
+                        break;
+                    }
+                });
+        } else {
+            messageApi.open({ type: 'warning', content: '登入之後才能為文章評分' });
+        }
     };
 
     return (
@@ -105,11 +150,9 @@ function PostSingleContent(props) {
             </PostContentContainer>
             <PostActionContainer style={{ borderTopColor: token.colorBorder }}>
                 <div style={{ marginLeft: -6 }}>
-                    <VoteButton type="up" checked={postData.post_userLiked} />
-                    <VoteButton type="down" checked={postData.post_userDisliked} />
-                    <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>
-                        { postData.post_rate }
-                    </Text>
+                    <VoteButton type="up" checked={userLiked} onClick={() => onVoteButtonClick('up')} />
+                    <VoteButton type="down" checked={userDisliked} onClick={() => onVoteButtonClick('down')} />
+                    <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>{ rate }</Text>
                 </div>
                 <PublishInfo actionText="提問於" date={postData.post_createdAt} username={postData.post_author.user_name} />
             </PostActionContainer>

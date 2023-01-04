@@ -31,7 +31,7 @@ exports.SignInUser = async (req, res) => {
                 return res.status(400).json({ message: verificationResponse.error });
             }
 
-            const profile = verificationResponse?.payload;            
+            const profile = verificationResponse?.payload;
 
             const userExists = await User.exists({ email: profile?.email });
 
@@ -41,6 +41,7 @@ exports.SignInUser = async (req, res) => {
                     user: {
                         name: generateUsername(profile?.given_name, profile?.family_name),
                         email: profile?.email,
+                        avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
                         token: jwt.sign({ id: userExists._id }, process.env.JWT_SECRET, { expiresIn: '1d' }),
                     },
                 });
@@ -48,14 +49,14 @@ exports.SignInUser = async (req, res) => {
                 const newUser = new User({
                     name: generateUsername(profile?.given_name, profile?.family_name),
                     email: profile?.email,
-                    // avatar: profile?.picture,
                 });
                 await newUser.save((_, user) => {
                     res.status(200).json({
                         message: 'success_signup',
                         user: {
                             name: generateUsername(profile?.given_name, profile?.family_name),
-                            email: profile?.email,
+                            email: user.email,
+                            avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
                             token: jwt.sign({ id: user._id  }, process.env.JWT_SECRET, { expiresIn: '1d' }),
                         },
                     });

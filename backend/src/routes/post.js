@@ -212,6 +212,12 @@ exports.GetSinglePost = async (req, res) => {
                 commentItem.author = { user_id, user_name };
                 commentItem.comment_id = commentItem._id;
                 delete commentItem._id;
+
+                commentItem.comment_rate = commentItem.likes.length - commentItem.dislikes.length;
+                commentItem.comment_userLiked = (valid) && (JSON.parse(JSON.stringify(commentItem.likes)).indexOf(userId) >= 0);
+                commentItem.comment_userDisliked = (valid) && (JSON.parse(JSON.stringify(commentItem.dislikes)).indexOf(userId) >= 0);
+                delete commentItem.likes;
+                delete commentItem.dislikes;
             }
 
             if (err) {
@@ -245,9 +251,58 @@ exports.UpdatePostRating = async (req, res) => {
         return;
     }
 
-    try {
-        res.status(200).send({ message: 'success', contents: comment });
-    } catch (err) {
-        console.log(err);
+    if (!postId) {
+        res.status(422).send({
+            message: 'error',
+            error: 'ERR_NOINPUT',
+            detail: 'POSTID',
+        });
+        return;
     }
+
+    if (isNaN(parseInt(option)) || ![-1, 0, 1].includes(parseInt(option))) {
+        res.status(422).send({
+            message: 'error',
+            error: 'ERR_NOINPUT',
+            detail: 'OPTION',
+        });
+        return;
+    }
+
+    const optionNew = parseInt(option) + 1;
+        
+    const updateOption = [{
+        $addToSet: { post_dislike: mongoose.Types.ObjectId(userId) },
+        $pull: { post_like: mongoose.Types.ObjectId(userId) },
+    }, {
+        $pull: {
+            post_like: mongoose.Types.ObjectId(userId),
+            post_dislike: mongoose.Types.ObjectId(userId),
+        },
+    }, {
+        $addToSet: { post_like: mongoose.Types.ObjectId(userId) },
+        $pull: { post_dislike: mongoose.Types.ObjectId(userId) },
+    }];
+
+    Post.findOneAndUpdate(
+        { _id: mongoose.Types.ObjectId(postId) }, updateOption[optionNew], { new: true },
+        (err, doc) => {
+            if (err) {
+                res.status(500).send({
+                    message: 'error',
+                    error: 'ERR_SERVER_DB',
+                    detail: err,
+                });
+            } else {
+                res.status(200).send({
+                    message: 'success',
+                    contents: {
+                        post_userLiked: (valid) && (JSON.parse(JSON.stringify(doc.post_like)).indexOf(userId) >= 0),
+                        post_userDisliked: (valid) && (JSON.parse(JSON.stringify(doc.post_dislike)).indexOf(userId) >= 0),
+                        post_rate: doc.post_like.length - doc.post_dislike.length,
+                    },
+                });
+            }
+        }
+    );
 };

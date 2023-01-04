@@ -1,9 +1,11 @@
-import React from 'react';
-import { Typography, Button, theme } from 'antd';    /* eslint-disable-line */
+import { React, useState } from 'react';
+import { Typography, Button, theme, message } from 'antd';    /* eslint-disable-line */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+
+import axios from '../api';
 
 import VoteButton from './VoteButton';
 import MarkdownContainer from './MarkdownContainer';
@@ -20,9 +22,6 @@ const Container = styled.li`
     padding: 16px 0;
     margin: 0 20px;
     border-bottom: 1px solid #FFFFFF00;
-    &:last-child {
-        border-bottom: unset;
-    }
 `;
 
 const VoteContainer = styled.div`
@@ -63,14 +62,55 @@ function CommentRow(props) {
         colorBorder,
     } = token;
 
+    const [messageApi, contextHolder] = message.useMessage();
+    const [userLiked, setUserLiked] = useState(commentData.comment_userLiked);
+    const [userDisliked, setUserDisliked] = useState(commentData.comment_userDisliked);
+    const [rate, setRate] = useState(commentData.comment_rate);
+
+    const onVoteButtonClick = (dir) => {
+        if (localStorage.getItem('token')) {
+            axios
+                .post('/updateCommentRating', {
+                    option: ((userLiked && dir === 'up') || (userDisliked && dir === 'down')) ? 0 : (dir === 'up') ? 1 : -1,  /* eslint-disable-line */
+                    commentId: commentData.comment_id,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                .then((res) => {
+                    const content = res.data.contents;
+                    setUserLiked(content.comment_userLiked);
+                    setUserDisliked(content.comment_userDisliked);
+                    setRate(content.comment_rate);
+                })
+                .catch((err) => {
+                    switch (err.response.data.error) {
+                    case 'ERR_AUTH_NOSIGN':
+                        messageApi.open({ type: 'error', content: '請先登入', duration: 5 });
+                        break;
+                    case 'ERR_NOINPUT':
+                        messageApi.open({ type: 'error', content: '錯誤！請重新整理後再重試。', duration: 5 });
+                        break;
+                    case 'ERR_SERVER_DB':
+                        messageApi.open({ type: 'error', content: '系統無法處理您的請求，請檢查請求內容或稍候再試。', duration: 5 });
+                        break;
+                    default:
+                        break;
+                    }
+                });
+        } else {
+            messageApi.open({ type: 'warning', content: '登入之後才能為留言評分' });
+        }
+    };
+
     return (
         <Container style={{ borderBottomColor: colorBorder }}>
+            { contextHolder }
             <VoteContainer>
-                <VoteButton type="up" checked={commentData.comment_userLiked} />
-                <Text style={{ fontSize: 16, lineHeight: 2, color: colorText }}>
-                    { commentData.likes.length - commentData.dislikes.length }
-                </Text>
-                <VoteButton type="down" checked={commentData.comment_userDisliked} />
+                <VoteButton type="up" checked={userLiked} onClick={() => onVoteButtonClick('up')} />
+                <Text style={{ fontSize: 16, lineHeight: 2, color: colorText }}>{ rate }</Text>
+                <VoteButton type="down" checked={userDisliked} onClick={() => onVoteButtonClick('down')} />
             </VoteContainer>
             <MainContainer>
                 {commentData && commentData.comment_adopt && (

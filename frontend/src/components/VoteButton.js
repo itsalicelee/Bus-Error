@@ -9,7 +9,7 @@ const { useToken } = theme;
 
 function VoteButton(props) {
     const { token } = useToken();
-    const { type, checked, disabled } = props;
+    const { type, checked, disabled, onClick } = props;     /* eslint-disable-line */
 
     const normalButtonStyle = {
         fontSize: 16,
@@ -31,6 +31,7 @@ function VoteButton(props) {
                     ? { ...normalButtonStyle, ...disabledButtonStyle }
                     : { ...normalButtonStyle }
             }
+            onClick={!disabled && onClick}
             disabled={disabled}
         >
             <FontAwesomeIcon icon={(type === 'up') ? faArrowUp : faArrowDown} />
@@ -42,11 +43,13 @@ VoteButton.propTypes = {
     type: PropTypes.string.isRequired,
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
+    onClick: PropTypes.func,
 };
 
 VoteButton.defaultProps = {
     disabled: false,
     checked: false,
+    onClick: () => {},
 };
 
 export default VoteButton;

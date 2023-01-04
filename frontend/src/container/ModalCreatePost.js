@@ -15,16 +15,6 @@ const titleStyle = {
     fontSize: '24px',
 };
 
-/*
-{
-    headers: {
-        'authorization': your_token,
-        'Accept' : 'application/json',
-        'Content-Type': 'application/json'
-    }
-}
-
- */
 function ModalCreatePost(props) {
     const { isModalOpen, onCancel, onSubmitSuccess } = props;
 
@@ -105,7 +95,7 @@ function ModalCreatePost(props) {
                 setSubmitBtnLoading(false);
                 switch (err.response.data.error) {
                 case 'ERR_AUTH_NOSIGN':
-                    messageApi.open({ type: 'error', content: '請先登入～', duration: 5 });
+                    messageApi.open({ type: 'error', content: '登入之後才能提問', duration: 5 });
                     break;
                 case 'ERR_TOPIC_UNKNOWN':
                     messageApi.open({ type: 'warning', content: '請檢查是否已選擇問題主題。', duration: 5 });

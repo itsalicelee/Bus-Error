@@ -2,8 +2,9 @@
 import { React, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
 
-import { Typography, Button, theme, Radio, message  } from 'antd'; /* eslint-disable-line */
+import { Typography, Button, theme, Radio, message } from 'antd'; /* eslint-disable-line */
 import CommentRow from '../components/CommentRow';
 import CommentReplyRow from '../components/CommentReplyRow';
 
@@ -34,17 +35,23 @@ function PostSingleComment(props) {
     const { postComments: postCts, postId } = props;
     const [commentSortValue, setCommentSortValue] = useState(0);
     const [showReplySlot, setShowReplySlot] = useState(false);
-    const [postComments, setPostComments] = useState(postCts);/* eslint-disable-line */
+    const [postComments, setPostComments] = useState(postCts);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const onCommentSortChange = ({ target: { value } }) => {
         setCommentSortValue(value);
     };
 
-    const onToReply = () => setShowReplySlot(true);
+    const onToReply = () => {
+        if (localStorage.getItem('token')) {
+            setShowReplySlot(true);
+        } else {
+            messageApi.open({ type: 'warning', content: '登入之後才能發表回答喔' });
+        }
+    };
     const onCancelReply = () => setShowReplySlot(false);
 
     // Message
-    const [messageApi, contextHolder] = message.useMessage();
     const onSubmitSuccess = () => {
         messageApi.open({ type: 'success', content: '留言成功' });
         onCancelReply();
@@ -60,14 +67,14 @@ function PostSingleComment(props) {
     ];
 
     const commentSortFuncs = [
-        (a, b) => (a.comment_createdAt - b.comment_createdAt),
-        (a, b) => (a.comment_like - a.comment_dislike - b.comment_like + b.comment_dislike),
+        (a, b) => (dayjs(a.createdAt).diff(dayjs(b.createdAt))),
+        (a, b) => (a.comment_rate - b.comment_rate),
     ];
 
     return (
         <CommentWrapper style={{ background: token.colorBgContainer }}>
             {contextHolder}
-            <CommentHeadContainer style={{ borderBottomColor: (postComments.length) ? token.colorBorder : '#FFFFFF00' }}>
+            <CommentHeadContainer style={{ borderBottomColor: (postComments.length || showReplySlot) ? token.colorBorder : '#FFFFFF00' }}>
                 <Text style={{ fontSize: 16 }}>
                     { postComments.length ? `共有 ${postComments.length} 則留言` : '暫時沒有留言' }
                 </Text>
