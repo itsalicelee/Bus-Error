@@ -32,7 +32,7 @@ const CommentList = styled.ul`
 
 function PostSingleComment(props) {
     const { token } = useToken();
-    const { postComments: postCts, postId } = props;
+    const { postComments: postCts, postId, isAuthor } = props;
     const [commentSortValue, setCommentSortValue] = useState(1);
     const [showReplySlot, setShowReplySlot] = useState(false);
     const [postComments, setPostComments] = useState(postCts);
@@ -117,6 +117,7 @@ function PostSingleComment(props) {
                                 commentData={postComment}
                                 postId={postId}
                                 onAdopted={onAdopted}
+                                isAuthor={isAuthor}
                             />
                         ))
                 )}
@@ -130,6 +131,7 @@ function PostSingleComment(props) {
                                 commentData={postComment}
                                 postId={postId}
                                 onAdopted={onAdopted}
+                                isAuthor={isAuthor}
                             />
                         ))
                 )}
@@ -141,6 +143,7 @@ function PostSingleComment(props) {
 PostSingleComment.propTypes = {
     postComments: PropTypes.array.isRequired,      /* eslint-disable-line */
     postId: PropTypes.string.isRequired,
+    isAuthor: PropTypes.bool.isRequired,
 };
 
 export default PostSingleComment;

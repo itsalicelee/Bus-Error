@@ -219,6 +219,7 @@ exports.GetSinglePost = async (req, res) => {
                 delete commentItem.likes;
                 delete commentItem.dislikes;
             }
+            dataItem.isAuthor = (valid) && (dataItem.post_author.user_id.toString() === mongoose.Types.ObjectId(userId).toString());
 
             if (err) {
                 res.status(500).send({

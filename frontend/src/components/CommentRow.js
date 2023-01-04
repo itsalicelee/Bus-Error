@@ -53,7 +53,7 @@ const ActionContainer = styled.div`
 `;
 
 function CommentRow(props) {
-    const { commentData, postId, onAdopted } = props;
+    const { commentData, postId, onAdopted, isAuthor } = props; /* eslint-disable-line */
     const { token } = useToken();
     const {
         colorWhite,
@@ -165,14 +165,15 @@ function CommentRow(props) {
                     </MarkdownContainer>
                 </div>
                 <ActionContainer>
-                    <div>
-                        <Button
-                            type="text"
-                            size="small"
-                            onClick={onAdoptButtonClick}
-                        >
-                            Adopt
-                        </Button>
+                    <div style={{ marginLeft: -5 }}>
+                        { isAuthor ? (
+                            <Button
+                                size="small"
+                                onClick={onAdoptButtonClick}
+                            >
+                                採納
+                            </Button>
+                        ) : ''}
                     </div>
                     <PublishInfo
                         actionText="回答於"
@@ -190,6 +191,7 @@ CommentRow.propTypes = {
     commentData: PropTypes.object.isRequired,      /* eslint-disable-line */
     postId: PropTypes.string.isRequired,
     onAdopted: PropTypes.func.isRequired,
+    isAuthor: PropTypes.bool.isRequired,
 };
 
 export default CommentRow;
