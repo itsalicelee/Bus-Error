@@ -1,6 +1,7 @@
 import { React, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 // Ant Design
 import { Typography, Button, Tag, theme, message } from 'antd'; /* eslint-disable-line */
@@ -56,6 +57,7 @@ const PostActionContainer = styled.div`
 function PostSingleContent(props) {
     const { token } = useToken();
     const { postData } = props;
+    const navigate = useNavigate();
 
     // Modal & Message
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -117,6 +119,42 @@ function PostSingleContent(props) {
         }
     };
 
+    const onDeleteButtonClick = () => {
+        if (localStorage.getItem('token')) {
+            axios
+                .post('/deletePost', {
+                    postId: postData.post_id,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                .then(() => {
+                    navigate('/');
+                })
+                .catch((err) => {
+                    switch (err.response.data.error) {
+                    case 'ERR_AUTH_NOSIGN':
+                        messageApi.open({ type: 'error', content: '請先登入', duration: 5 });
+                        break;
+                    case 'ERR_POST_UNKNOWN':
+                        messageApi.open({ type: 'error', content: '貼文不存在或已經被刪除', duration: 5 });
+                        break;
+                    case 'ERR_AUTHOR_UNKNOWN':
+                        messageApi.open({ type: 'error', content: '您必須為此篇貼文之作者才可採納發言', duration: 5 });
+                        break;
+                    case 'ERR_SERVER_DB':
+                        messageApi.open({ type: 'error', content: '系統無法處理您的請求，請檢查請求內容或稍候再試。', duration: 5 });
+                        break;
+                    default:
+                        break;
+                    }
+                });
+        } else {
+            messageApi.open({ type: 'warning', content: '登入之後才能刪除文章' });
+        }
+    };
+
     return (
         <PostContainer style={{ background: token.colorBgContainer }}>
             {contextHolder}
@@ -153,6 +191,7 @@ function PostSingleContent(props) {
                     <VoteButton type="up" checked={userLiked} onClick={() => onVoteButtonClick('up')} />
                     <VoteButton type="down" checked={userDisliked} onClick={() => onVoteButtonClick('down')} />
                     <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>{ rate }</Text>
+                    <Button style={{ marginLeft: 16 }} size="small" onClick={onDeleteButtonClick}>Delete</Button>
                 </div>
                 <PublishInfo
                     actionText="提問於"
