@@ -5,7 +5,6 @@ const API_ROOT = process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://loc
 const instance = axios.create({
     baseURL: API_ROOT,
     timeout: 60000,
-    withCredentials: true,
 });
 
 export default instance;

@@ -4,8 +4,11 @@ import User from '../models/user';
 import Tag from '../models/tag';
 
 import { validateToken } from '../tools';
+import { Router } from "express";
 
-exports.CreatePost = async (req, res) => {
+const router = Router();
+
+router.post("/createPost", async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const { valid, userId, message } = validateToken(token);
 
@@ -52,9 +55,9 @@ exports.CreatePost = async (req, res) => {
             detail: err,
         });
     }
-};
+});
 
-exports.GetPostList = async (req, res) => {
+router.get("/getPostList", async (req, res) => {
     const { topic, order, pageNum } = req.query;
     const topicLimit = !(topic === undefined || topic === 'all');
     const orderLimit = !(isNaN(parseInt(order)) || ![0, 1, 2].includes(parseInt(order)));
@@ -139,9 +142,9 @@ exports.GetPostList = async (req, res) => {
             }
     });
 
-};
+});
 
-exports.GetSinglePost = async (req, res) => {
+router.get("/getSinglePost", async (req, res) => {
     const { postId } = req.query;
 
     if (!postId) {
@@ -234,9 +237,9 @@ exports.GetSinglePost = async (req, res) => {
                 });
             }
         });
-};
+});
 
-exports.UpdatePostRating = async (req, res) => {
+router.post("/updatePostRating", async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const { valid, userId, message } = validateToken(token);
 
@@ -306,4 +309,6 @@ exports.UpdatePostRating = async (req, res) => {
             }
         }
     );
-};
+});
+
+export default router;

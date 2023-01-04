@@ -7,6 +7,9 @@ import User from '../models/user';
 import Post from '../models/post';
 import Comment from '../models/comment';
 
+import { Router } from "express";
+const router = Router();
+
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -24,7 +27,7 @@ const verifyGoogleToken = async (token) => {
 
 const generateUsername = (firstName, lastName) => lastName + ' ' + firstName;
 
-exports.SignInUser = async (req, res) => {
+router.post("/signInUser", async (req, res) => {
     try {
         if (req.body.credential) {
 
@@ -88,9 +91,9 @@ exports.SignInUser = async (req, res) => {
             message: error?.message || error,
         });
     }
-};
+});
 
-exports.GetUserInfo = async (req, res) => {
+router.get("/getUser", async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const { valid, userId, message } = validateToken(token);
 
@@ -134,9 +137,9 @@ exports.GetUserInfo = async (req, res) => {
             });
         }
     })
-};
+});
 
-exports.UpdateUser = async (req, res) => {
+router.post("/updateUser", async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const { valid, userId, message } = validateToken(token);
 
@@ -149,9 +152,7 @@ exports.UpdateUser = async (req, res) => {
             error: 'ERR_AUTH_NOSIGN',
             detail: message,
         });
-        return;
     }
-
     if (!newName) {
         res.status(422).send({
             message: 'error',
@@ -192,4 +193,6 @@ exports.UpdateUser = async (req, res) => {
             });
         }
     });
-};
+});
+
+export default router;
