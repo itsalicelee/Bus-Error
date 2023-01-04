@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 // Ant Design
-import { Typography, Button, Tag, theme, message } from 'antd'; /* eslint-disable-line */
+import { Typography, Button, Tag, theme, message, Popconfirm } from 'antd'; /* eslint-disable-line */
 
 import MarkdownContainer from '../components/MarkdownContainer';
 import PublishInfo from '../components/PublishInfo';
@@ -191,7 +191,20 @@ function PostSingleContent(props) {
                     <VoteButton type="up" checked={userLiked} onClick={() => onVoteButtonClick('up')} />
                     <VoteButton type="down" checked={userDisliked} onClick={() => onVoteButtonClick('down')} />
                     <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>{ rate }</Text>
-                    <Button style={{ marginLeft: 16 }} size="small" onClick={onDeleteButtonClick}>Delete</Button>
+                    {(postData.isAuthor)
+                        ? (
+                            <Popconfirm
+                                placement="topLeft"
+                                title="確定刪除貼文？"
+                                description="注意：此動作無法復原"
+                                onConfirm={onDeleteButtonClick}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button style={{ marginLeft: 16 }} size="small">刪除貼文</Button>
+                            </Popconfirm>
+                        )
+                        : '' }
                 </div>
                 <PublishInfo
                     actionText="提問於"
