@@ -26,6 +26,7 @@ function main(app) {
 
     /* Comment Route */
     app.post('/api/v1/createComment', wrap(commentRoute.CreateComment));
+    app.post('/api/v1/adoptComment', wrap(commentRoute.AdoptComment));
     app.post('/api/v1/updateCommentRating', wrap(commentRoute.UpdateCommentRating));
     // app.get('/api/v1/updateComment', wrap(commentRoute.UpdateComment));
     // app.get('/api/v1/deleteComment', wrap(commentRoute.DeleteComment));
