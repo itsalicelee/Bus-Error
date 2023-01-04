@@ -1,13 +1,18 @@
 import { React, useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import { Tabs, Pagination, Typography, Button, theme, message } from 'antd'; /* eslint-disable-line */
+import {
+    Tabs, Pagination, Typography, Button, theme, message,
+} from 'antd'; /* eslint-disable-line */
 import styled from 'styled-components';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 import axios from '../api';
 import PostRow from '../components/PostRow';
 import ModalCreatePost from './ModalCreatePost';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 const { useToken } = theme;
 
 const Container = styled.div`
@@ -42,6 +47,7 @@ function PostListView() {
     const [postKeyword, setPostKeyword] = useState('全部');
     const [params, setParams] = useState({});
     const [reloadFlipFlop, setReloadFlipFlop] = useState(false);
+    const [listLoading, setListLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
 
     const orders = ['newest', 'hottest', 'unsolved'];
@@ -78,9 +84,11 @@ function PostListView() {
 
     useEffect(() => {
         if (init) {
+            setListLoading(true);
             axios
                 .get('/getPostList', { params })
                 .then((res) => {
+                    setListLoading(false);
                     setPostItems(res.data.contents.posts);
                     setPostCount(res.data.contents.totalPage * 10);
                     if (res.data.contents.mainTag) {
@@ -108,22 +116,28 @@ function PostListView() {
 
     useEffect(() => {
         setPostData((
-            <TabChild>
+            <>
                 { postItems && postItems.map((postItem) => (
                     <PostRow key={postItem.post_id} postItem={postItem} />
                 ))}
-            </TabChild>
+                <div />
+            </>
         ));
     }, [postItems]);
 
     const onTabChange = (key) => {
-        // window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         setTimeout(() => navigate(`/posts/topic/${topicName ?? 'all'}/${key}/`), 0);
     };
 
     const onPageChange = (newPage) => {
-        // window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         setTimeout(() => navigate(`/posts/topic/${topicName ?? 'all'}/${orders[params.order]}/${newPage}`), 0);
+    };
+
+    const tabStyle = {
+        opacity: (listLoading) ? 0.35 : 1,
+        transition: 'all .2s cubic-bezier(.645,.045,.355,1)',
     };
 
     return (
@@ -143,13 +157,14 @@ function PostListView() {
             </Text>
             <Button type="primary" style={{ ...tabSideStyle, right: 20, top: 9 }} onClick={showModal}>問問題</Button>
             <Tabs
-                defaultActiveKey={order}
+                // defaultActiveKey={order}
+                activeKey={order ?? 'newest'}
                 onChange={onTabChange}
                 centered
                 items={[
-                    { label: '最新問題', key: 'newest', children: postData },
-                    { label: '熱門問題', key: 'hottest', children: postData },
-                    { label: '尚待解決', key: 'unsolved', children: postData },
+                    { label: '最新問題', key: 'newest', children: <TabChild style={tabStyle}>{postData}</TabChild> },
+                    { label: '熱門問題', key: 'hottest', children: <TabChild style={tabStyle}>{postData}</TabChild> },
+                    { label: '尚待解決', key: 'unsolved', children: <TabChild style={tabStyle}>{postData}</TabChild> },
                 ]}
             />
             {(postCount > 0) ? (
@@ -162,7 +177,15 @@ function PostListView() {
                     style={{ textAlign: 'center', padding: '18px 0 20px 0' }}
                 />
             ) : (
-                <div />
+                <div style={{ textAlign: 'center', paddingTop: 20, paddingBottom: 20 }}>
+                    <FontAwesomeIcon
+                        icon={faMagnifyingGlass}
+                        style={{ fontSize: 32, color: token.colorBorder }}
+                    />
+                    <Title level={5} style={{ color: token.colorBorder, marginTop: 12 }}>
+                        沒有貼文
+                    </Title>
+                </div>
             )}
         </Container>
     );

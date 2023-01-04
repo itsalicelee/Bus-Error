@@ -41,16 +41,16 @@ function SideStatistic(props) {
         <div>
             <Divider />
             <Text type="secondary">
-                {(icon) ? <FontAwesomeIcon icon={icon} style={{ width: 16, marginRight: 4 }} /> : ''}
+                {(icon) ? <FontAwesomeIcon icon={icon} style={{ width: 16, marginLeft: -1, marginRight: 6 }} /> : ''}
                 {title}
             </Text>
-            <div style={{ marginBottom: (suffix) ? -3 : 0, marginLeft: (icon) ? 20 : 0 }}>
+            <div style={{ marginBottom: (suffix) ? -3 : 0, marginLeft: (icon) ? 21 : 0 }}>
                 <Text type="primary" style={{ lineHeight: 1.5, fontSize: 24 }}>{value}</Text>
                 &nbsp;
                 <Text type="primary" style={{ display: 'inline-block', transform: 'translateY(-0.55px)' }}>{unit}</Text>
             </div>
             {(suffix !== null) && (
-                <Text type="secondary" style={{ display: 'inline-block', marginTop: -5, marginLeft: (icon) ? 20 : 0 }}>{suffix}</Text>
+                <Text type="secondary" style={{ display: 'inline-block', marginTop: -5, marginLeft: (icon) ? 21 : 0 }}>{suffix}</Text>
             )}
         </div>
     );
