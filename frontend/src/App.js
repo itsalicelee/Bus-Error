@@ -26,6 +26,15 @@ const fontConfig = 'Roboto, "Noto Sans TC", -apple-system, BlinkMacSystemFont, "
 function App() {
     // Dark Mode
     const [darkMode, setDarkMode] = useState(lsDarkMode === 'true' || false);
+    const [user, setUser] = useState({ name: '匿名使用者', avatar: 'https://www.w3schools.com/howto/img_avatar.png' });
+    useEffect(() => {
+        const theUser = localStorage.getItem('user');
+
+        if (theUser && !theUser.includes('undefined')) {
+            setUser(JSON.parse(theUser));
+        }
+    }, []);
+
     const handleThemeChange = () => setDarkMode(!darkMode);
     useEffect(() => localStorage.setItem(LOCALSTORAGE_KEY, darkMode), [darkMode]);
 
@@ -38,7 +47,11 @@ function App() {
             autoInsertSpaceInButton={false}
         >
             <Router>
-                <PageHeader darkMode={darkMode} handleThemeChange={handleThemeChange} />
+                <PageHeader
+                    darkMode={darkMode}
+                    handleThemeChange={handleThemeChange}
+                    userEmail={user?.email}
+                />
                 <MainWrapper>
                     <PageMenu />
                     <Routes>
@@ -52,7 +65,7 @@ function App() {
                         {/* Page Single View */}
                         <Route path="/posts/:postId" element={<PostSingleView />} />
                     </Routes>
-                    <PageSideBar />
+                    <PageSideBar username={user.name} avatar={user.avatar} />
                 </MainWrapper>
             </Router>
         </ConfigProvider>

@@ -50,14 +50,13 @@ const SignInButton = styled.div`
 `;
 
 function PageHeader(props) {
-    const { darkMode, handleThemeChange } = props;
+    const { darkMode, handleThemeChange, userEmail } = props;
+
     const { token } = useToken();
     document.body.style.backgroundColor = (!darkMode) ? '#FAFAFA' : '#050505';
     const onThemeChange = () => handleThemeChange();
 
     const [signInStage, setSignInStage] = useState(0);
-    const [user, setUser] = useState({});
-
     const { handleGoogle } = useFetch();
 
     useEffect(() => {
@@ -89,15 +88,7 @@ function PageHeader(props) {
         }
     }, [signInStage]);
 
-    useEffect(() => { if (user?.email) setSignInStage(2); }, [user]);
-
-    useEffect(() => {
-        const theUser = localStorage.getItem('user');
-
-        if (theUser && !theUser.includes('undefined')) {
-            setUser(JSON.parse(theUser));
-        }
-    }, []);
+    useEffect(() => { if (userEmail) setSignInStage(2); }, [userEmail]);
 
     return (
         <Header>
@@ -122,6 +113,7 @@ function PageHeader(props) {
 PageHeader.propTypes = {
     darkMode: PropTypes.bool.isRequired,
     handleThemeChange: PropTypes.func.isRequired,
+    userEmail: PropTypes.string,
 };
 
 export default PageHeader;
