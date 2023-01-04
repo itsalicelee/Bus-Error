@@ -3,9 +3,6 @@
 /.pnp
 .pnp.js
 
-# db
-backend/.env
-
 # testing
 /coverage
 
@@ -14,6 +11,7 @@ backend/.env
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
