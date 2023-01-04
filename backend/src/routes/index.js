@@ -12,7 +12,7 @@ function main(app) {
     /* User Route */
     app.post('/api/v1/signInUser', wrap(userRoute.SignInUser));
     app.get('/api/v1/getUser', wrap(userRoute.GetUserInfo));
-    // app.post('/api/v1/updateUser', wrap(userRoute.updateUser));
+    app.post('/api/v1/updateUser', wrap(userRoute.UpdateUser));
 
     /* Tag Route */
     app.get('/api/v1/getMainTagList', wrap(tagRoute.GetMainTagList));
