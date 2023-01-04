@@ -16,10 +16,7 @@ import ModalMyInfo from './ModalMyInfo';
 const { useToken } = theme;
 
 const SignInButton = styled.div`
-    > div > div:first-child,
-    > div > div:last-child {
-        display: none;
-    }
+    > div > div:first-child{ display: none; }
 `;
 
 const FaIcon = styled(FontAwesomeIcon)`
@@ -118,8 +115,11 @@ function PageAuthButton() {
     return (
         <>
             {contextHolder}
+
             { (signInStage === 0) && (<Button type="primary" shape="round" onClick={onSignInBtnClick}>登入</Button>) }
-            { (signInStage === 1) && (<SignInButton id="sign-in-btn" data-text="signup_with" />) }
+
+            <SignInButton id="sign-in-btn" data-text="signup_with" style={{ display: (signInStage === 1) ? 'block' : 'none' }} />
+
             { (signInStage === 2) && (
                 <>
                     <Dropdown
