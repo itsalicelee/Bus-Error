@@ -4,6 +4,11 @@ import mongoose from 'mongoose';
 
 import { validateToken } from '../tools';
 import User from '../models/user';
+import Post from '../models/post';
+import Comment from '../models/comment';
+
+import { Router } from "express";
+const router = Router();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
@@ -22,7 +27,7 @@ const verifyGoogleToken = async (token) => {
 
 const generateUsername = (firstName, lastName) => lastName + ' ' + firstName;
 
-exports.SignInUser = async (req, res) => {
+router.post("/signInUser", async (req, res) => {
     try {
         if (req.body.credential) {
 
@@ -37,11 +42,9 @@ exports.SignInUser = async (req, res) => {
             const userInfo = await User.findOne({ email: profile?.email });
 
             if (userInfo) {
-                if (profile?.picture) {
-                    User.findOneAndUpdate({ _id: userInfo._id }, {
-                        $set: { avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c' }
-                    }, {}, () => {});
-                }
+                const postCount = await Post.find({ post_author: userInfo._id }).count();
+                const commentCountAll = await Comment.find({ author: userInfo._id }).count();
+                const commentCountAdopted = await Comment.find({ author: userInfo._id, adopted: true }).count();
                 res.status(200).json({
                     message: 'success_signin',
                     user: {
@@ -49,6 +52,12 @@ exports.SignInUser = async (req, res) => {
                         email: userInfo.email,
                         avatar: userInfo.avatar ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
                         token: jwt.sign({ id: userInfo._id }, process.env.JWT_SECRET, { expiresIn: '1d' }),
+                        join: userInfo.createdAt,
+                        counts: {
+                            post: postCount,
+                            commentAll: commentCountAll,
+                            commentAdopted: commentCountAdopted,
+                        }
                     },
                 });
             } else {
@@ -57,7 +66,7 @@ exports.SignInUser = async (req, res) => {
                     email: profile?.email,
                     avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
                 });
-                await newUser.save((_, user) => {
+                await newUser.save(async (_, user) => {
                     res.status(200).json({
                         message: 'success_signup',
                         user: {
@@ -65,6 +74,12 @@ exports.SignInUser = async (req, res) => {
                             email: user.email,
                             avatar: user.avatar,
                             token: jwt.sign({ id: user._id  }, process.env.JWT_SECRET, { expiresIn: '1d' }),
+                            join: user.createdAt,
+                            counts: {
+                                post: 0,
+                                commentAll: 0,
+                                commentAdopted: 0,
+                            }
                         },
                     });
                 });
@@ -76,9 +91,9 @@ exports.SignInUser = async (req, res) => {
             message: error?.message || error,
         });
     }
-};
+});
 
-exports.GetUserInfo = async (req, res) => {
+router.get("/getUser", async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const { valid, userId, message } = validateToken(token);
 
@@ -95,7 +110,7 @@ exports.GetUserInfo = async (req, res) => {
 
     User.findOne({
         _id: mongoose.Types.ObjectId(userId),
-    }).exec((err, data) => {
+    }).exec(async (err, data) => {
         if (err) {
             res.status(500).send({
                 message: 'error',
@@ -103,37 +118,81 @@ exports.GetUserInfo = async (req, res) => {
                 detail: err,
             });
         } else {
+            const postCount = await Post.find({ post_author: mongoose.Types.ObjectId(userId) }).count();
+            const commentCountAll = await Comment.find({ author: mongoose.Types.ObjectId(userId) }).count();
+            const commentCountAdopted = await Comment.find({ author: mongoose.Types.ObjectId(userId), adopted: true }).count();
             res.status(200).json({
                 message: 'success',
                 user: {
                     name: data.name,
                     email: data.email,
                     avatar: data.avatar ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
+                    join: data.createdAt,
+                    counts: {
+                        post: postCount,
+                        commentAll: commentCountAll,
+                        commentAdopted: commentCountAdopted,
+                    }
                 },
             });
         }
     })
-};
+});
 
-exports.UpdateUser = async (req, res) => {
+router.post("/updateUser", async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const { valid, userId, message } = validateToken(token);
+
+    const body = req.body;
+    const { newName } = body;
     
-    // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJmZmEwNmIzMTkwMmNkZDBlNzBlOSIsImlhdCI6MTY3MjY3NTMxNiwiZXhwIjoxNjcyNzYxNzE2fQ._bK7FYti-ysFquF7qjtN891dVIA7o5Q7wXGX5azGqGA';
+    if (!valid) {
+        res.status(403).send({
+            message: 'error',
+            error: 'ERR_AUTH_NOSIGN',
+            detail: message,
+        });
+    }
+    if (!newName) {
+        res.status(422).send({
+            message: 'error',
+            error: 'ERR_NOINPUT',
+            detail: 'NEW_NAME',
+        });
+        return;
+    }
 
-    // console.log(validateToken(token))
-    // res.status(200).send({ message: 'success' });
+    User.findOneAndUpdate({
+        _id: mongoose.Types.ObjectId(userId),
+    }, {
+        $set: { name: newName, },
+    }, {}, async (err, data) => {
+        if (err) {
+            res.status(500).send({
+                message: 'error',
+                error: 'ERR_SERVER_DB',
+                detail: err,
+            });
+        } else {
+            const postCount = await Post.find({ post_author: mongoose.Types.ObjectId(userId) }).count();
+            const commentCountAll = await Comment.find({ author: mongoose.Types.ObjectId(userId) }).count();
+            const commentCountAdopted = await Comment.find({ author: mongoose.Types.ObjectId(userId), adopted: true }).count();
+            res.status(200).json({
+                message: 'success',
+                user: {
+                    name: data.name,
+                    email: data.email,
+                    avatar: data.avatar ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
+                    join: data.createdAt,
+                    counts: {
+                        post: postCount,
+                        commentAll: commentCountAll,
+                        commentAdopted: commentCountAdopted,
+                    }
+                },
+            });
+        }
+    });
+});
 
-    // const body = req.body;
-    // const { name, email, password, tag } = body;
-    // try {
-    //     const user = new User({
-    //         name: name,
-    //         email: email,
-    //         password: password,
-    //         tag: tag,
-    //     });
-    //     await user.save();
-    //     res.status(200).send({ message: 'success', contents: user });
-    // } catch (err) {
-    //     console.log(err);
-    // }
-};
+export default router;

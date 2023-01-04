@@ -2,29 +2,26 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import routes from './routes';
+import path from 'path';
 
 require('dotenv').config();
-const app = express();
 
 mongoose.set('strictQuery', false);
 
-// init middleware
+const app = express();
 app.use(cors({
-    origin: 'http://localhost:3000', 
-    credentials: true,
     optionSuccessStatus: 200
 }));
 app.use(express.json());
-app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
-    );
-    res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-});
+app.use('/', routes);
+
+if (process.env.NODE_ENV === "production") {
+    const __dirname = path.resolve();
+    app.use(express.static(path.join(__dirname, "../frontend", "build")));
+    app.get("/*", function (req, res) {
+        res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
+    });
+}
 
 const port = process.env.PORT || 4000;
 
@@ -37,12 +34,12 @@ if (!process.env.MONGO_URL) {
         useNewUrlParser: true,
     });
 }
+
 const db = mongoose.connection;
 db.on('error', (error) => {
     throw new Error('Mongoose connection error ' + error);
 });
 db.once('open', () => {
-    routes(app);
     app.listen(port, () => {
         console.log(`Server is up on port ${port}.`);
     });

@@ -1,72 +1,100 @@
-import { React } from 'react';
 import {
-    Card, Image, Row, Statistic,
-} from 'antd';
-import { CommentOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+    React, useState, useEffect, useContext,
+} from 'react';
+import { Card, Divider as AntDivider, Typography } from 'antd';
+
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faCircleQuestion, faCommentDots } from '@fortawesome/free-regular-svg-icons';
+
 import styled from 'styled-components';
+
+import { AuthContext } from '../hooks/useAuth';
+
+const { Title, Text } = Typography;
 
 const InfoWrapper = styled.div`
     margin-left: auto;
     margin-right: auto;
     align-items: center;
     justify-content: center;
-    margin: 5px;
+    margin: 4px;
 `;
 
-const CenterText = styled.p`
-    text-align: center;
-    margin: 10px;
+const SideBarContainer = styled.div`
+    width: 200px;
+    padding-right: 16px;
 `;
 
-function PageSideBar(props) {
+const Divider = styled(AntDivider)`
+    margin: 6px 0 10px 0;
+`;
+
+function SideStatistic(props) {
     const {
-        username, avatar, commentNum, postNum,
+        title, value, unit, suffix, icon,
     } = props;
-    // const [commentNum, setCommentNum] = useState(0);
-
-    // useEffect(() => {
-    //     axios
-    //         .get('/GetCommentNum', {
-    //             params: { postId },
-    //             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    //         })
-    //         .then((res) => {
-    //             setCommentNum(res.data.contents[0]);
-    //         });
-    // }, [postId]);
 
     return (
-        <Card title="使用者資訊" style={{ width: '200px', maxHeight: '500px' }}>
-            <Image
-                width={150}
-                height={150}
-                src={avatar}
-                style={{ borderRadius: '50%' }}
-                fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3PTWBSGcbGzM6GCKqlIBRV0dHRJFarQ0eUT8LH4BnRU0NHR0UEFVdIlFRV7TzRksomPY8uykTk/zewQfKw/9znv4yvJynLv4uLiV2dBoDiBf4qP3/ARuCRABEFAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghggQAQZQKAnYEaQBAQaASKIAQJEkAEEegJmBElAoBEgghgg0Aj8i0JO4OzsrPv69Wv+hi2qPHr0qNvf39+iI97soRIh4f3z58/u7du3SXX7Xt7Z2enevHmzfQe+oSN2apSAPj09TSrb+XKI/f379+08+A0cNRE2ANkupk+ACNPvkSPcAAEibACyXUyfABGm3yNHuAECRNgAZLuYPgEirKlHu7u7XdyytGwHAd8jjNyng4OD7vnz51dbPT8/7z58+NB9+/bt6jU/TI+AGWHEnrx48eJ/EsSmHzx40L18+fLyzxF3ZVMjEyDCiEDjMYZZS5wiPXnyZFbJaxMhQIQRGzHvWR7XCyOCXsOmiDAi1HmPMMQjDpbpEiDCiL358eNHurW/5SnWdIBbXiDCiA38/Pnzrce2YyZ4//59F3ePLNMl4PbpiL2J0L979+7yDtHDhw8vtzzvdGnEXdvUigSIsCLAWavHp/+qM0BcXMd/q25n1vF57TYBp0a3mUzilePj4+7k5KSLb6gt6ydAhPUzXnoPR0dHl79WGTNCfBnn1uvSCJdegQhLI1vvCk+fPu2ePXt2tZOYEV6/fn31dz+shwAR1sP1cqvLntbEN9MxA9xcYjsxS1jWR4AIa2Ibzx0tc44fYX/16lV6NDFLXH+YL32jwiACRBiEbf5KcXoTIsQSpzXx4N28Ja4BQoK7rgXiydbHjx/P25TaQAJEGAguWy0+2Q8PD6/Ki4R8EVl+bzBOnZY95fq9rj9zAkTI2SxdidBHqG9+skdw43borCXO/ZcJdraPWdv22uIEiLA4q7nvvCug8WTqzQveOH26fodo7g6uFe/a17W3+nFBAkRYENRdb1vkkz1CH9cPsVy/jrhr27PqMYvENYNlHAIesRiBYwRy0V+8iXP8+/fvX11Mr7L7ECueb/r48eMqm7FuI2BGWDEG8cm+7G3NEOfmdcTQw4h9/55lhm7DekRYKQPZF2ArbXTAyu4kDYB2YxUzwg0gi/41ztHnfQG26HbGel/crVrm7tNY+/1btkOEAZ2M05r4FB7r9GbAIdxaZYrHdOsgJ/wCEQY0J74TmOKnbxxT9n3FgGGWWsVdowHtjt9Nnvf7yQM2aZU/TIAIAxrw6dOnAWtZZcoEnBpNuTuObWMEiLAx1HY0ZQJEmHJ3HNvGCBBhY6jtaMoEiJB0Z29vL6ls58vxPcO8/zfrdo5qvKO+d3Fx8Wu8zf1dW4p/cPzLly/dtv9Ts/EbcvGAHhHyfBIhZ6NSiIBTo0LNNtScABFyNiqFCBChULMNNSdAhJyNSiECRCjUbEPNCRAhZ6NSiAARCjXbUHMCRMjZqBQiQIRCzTbUnAARcjYqhQgQoVCzDTUnQIScjUohAkQo1GxDzQkQIWejUogAEQo121BzAkTI2agUIkCEQs021JwAEXI2KoUIEKFQsw01J0CEnI1KIQJEKNRsQ80JECFno1KIABEKNdtQcwJEyNmoFCJAhELNNtScABFyNiqFCBChULMNNSdAhJyNSiECRCjUbEPNCRAhZ6NSiAARCjXbUHMCRMjZqBQiQIRCzTbUnAARcjYqhQgQoVCzDTUnQIScjUohAkQo1GxDzQkQIWejUogAEQo121BzAkTI2agUIkCEQs021JwAEXI2KoUIEKFQsw01J0CEnI1KIQJEKNRsQ80JECFno1KIABEKNdtQcwJEyNmoFCJAhELNNtScABFyNiqFCBChULMNNSdAhJyNSiECRCjUbEPNCRAhZ6NSiAARCjXbUHMCRMjZqBQiQIRCzTbUnAARcjYqhQgQoVCzDTUnQIScjUohAkQo1GxDzQkQIWejUogAEQo121BzAkTI2agUIkCEQs021JwAEXI2KoUIEKFQsw01J0CEnI1KIQJEKNRsQ80JECFno1KIABEKNdtQcwJEyNmoFCJAhELNNtScABFyNiqFCBChULMNNSdAhJyNSiEC/wGgKKC4YMA4TAAAAABJRU5ErkJggg=="
-            />
-            <InfoWrapper>
-                <CenterText>
-                    { username }
-                </CenterText>
-                <Row gutter={8}>
-                    <Statistic title="留言" value={commentNum === '' ? '請先登入' : commentNum} valueStyle={postNum === '' ? { fontSize: 16 } : {}} prefix={<CommentOutlined />} />
-                </Row>
-                <br />
-                <Row gutter={8}>
-                    <Statistic title="發問" value={postNum === '' ? '請先登入' : postNum} valueStyle={postNum === '' ? { fontSize: 16 } : {}} prefix={<QuestionCircleOutlined />} />
-                </Row>
-            </InfoWrapper>
-
-        </Card>
+        <div>
+            <Divider />
+            <Text type="secondary">
+                {(icon) ? <FontAwesomeIcon icon={icon} style={{ width: 16, marginRight: 4 }} /> : ''}
+                {title}
+            </Text>
+            <div style={{ marginBottom: (suffix) ? -3 : 0, marginLeft: (icon) ? 20 : 0 }}>
+                <Text type="primary" style={{ lineHeight: 1.5, fontSize: 24 }}>{value}</Text>
+                &nbsp;
+                <Text type="primary" style={{ display: 'inline-block', transform: 'translateY(-0.55px)' }}>{unit}</Text>
+            </div>
+            {(suffix !== null) && (
+                <Text type="secondary" style={{ display: 'inline-block', marginTop: -5, marginLeft: (icon) ? 20 : 0 }}>{suffix}</Text>
+            )}
+        </div>
     );
 }
 
-PageSideBar.propTypes = {
-    username: PropTypes.string.isRequired,
-    avatar: PropTypes.string.isRequired,
-    commentNum: PropTypes.string.isRequired,
-    postNum: PropTypes.string.isRequired,
+SideStatistic.propTypes = {
+    title: PropTypes.string.isRequired,
+    value: PropTypes.number.isRequired,
+    unit: PropTypes.string.isRequired,
+    suffix: PropTypes.string,
+    icon: PropTypes.object,     /* eslint-disable-line */
 };
+
+SideStatistic.defaultProps = {
+    suffix: null,
+    icon: null,
+};
+
+function PageSideBar() {
+    const { userState } = useContext(AuthContext);
+    const [user] = userState;
+    const [dayDiff, setDayDiff] = useState(0);
+
+    useEffect(() => setDayDiff(
+        Math.ceil(dayjs().diff(dayjs(user.join), 'hour') / 24),
+    ), [user]);
+
+    return (
+        <SideBarContainer>
+            <Card size="small">
+                {user.name ? (
+                    <InfoWrapper>
+                        <Text>您好，</Text>
+                        <Title level={4} style={{ marginTop: 0 }}>{user.name}</Title>
+                        <SideStatistic title="已加入社群" value={dayDiff} unit="天" icon={faUser} />
+                        <SideStatistic title="提出的問題" value={user.counts.post} unit="個" icon={faCircleQuestion} />
+                        <SideStatistic title="已發表回答" value={user.counts.commentAll} unit="則" icon={faCommentDots} suffix={`其中 ${user.counts.commentAdopted} 則獲採納`} />
+                    </InfoWrapper>
+                ) : (
+                    <InfoWrapper />
+                )}
+            </Card>
+        </SideBarContainer>
+    );
+}
 
 export default PageSideBar;

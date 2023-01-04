@@ -1,6 +1,9 @@
 import Tag from '../models/tag';
+import { Router } from "express";
 
-exports.GetMainTagList = async (req, res) => {
+const router = Router();
+
+router.get("/getMainTagList", async (req, res) => {
     Tag.find({}, {
         '_id': 0,
         'tag_identifier': 1,
@@ -20,4 +23,6 @@ exports.GetMainTagList = async (req, res) => {
             });
         }
     });
-};
+});
+
+export default router;

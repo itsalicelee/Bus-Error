@@ -5,9 +5,11 @@ import Tag from '../models/tag';
 import Comment from '../models/comment';
 
 import { validateToken } from '../tools';
-import e from 'cors';
+import { Router } from "express";
 
-exports.CreatePost = async (req, res) => {
+const router = Router();
+
+router.post("/createPost", async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const { valid, userId, message } = validateToken(token);
 
@@ -54,9 +56,9 @@ exports.CreatePost = async (req, res) => {
             detail: err,
         });
     }
-};
+});
 
-exports.GetPostList = async (req, res) => {
+router.get("/getPostList", async (req, res) => {
     const { topic, order, pageNum } = req.query;
     const topicLimit = !(topic === undefined || topic === 'all');
     const orderLimit = !(isNaN(parseInt(order)) || ![0, 1, 2].includes(parseInt(order)));
@@ -141,9 +143,9 @@ exports.GetPostList = async (req, res) => {
             }
     });
 
-};
+});
 
-exports.GetSinglePost = async (req, res) => {
+router.get("/getSinglePost", async (req, res) => {
     const { postId } = req.query;
 
     if (!postId) {
@@ -236,65 +238,9 @@ exports.GetSinglePost = async (req, res) => {
                 });
             }
         });
-};
+});
 
-exports.DeletePost = async (req, res) => {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    const { valid, userId, message } = validateToken(token);
-
-    const body = req.body;
-    const { postId } = body;
-
-    if (!valid) {
-        res.status(403).send({
-            message: 'error',
-            error: 'ERR_AUTH_NOSIGN',
-            detail: message,
-        });
-        return;
-    }
-
-    try {
-        const postRet = (await Post.findOne({ _id: mongoose.Types.ObjectId(postId) }));
-        if (postRet) {
-            if (userId === postRet.post_author.toString()) {
-                try {
-                    await Post.deleteOne({ _id: mongoose.Types.ObjectId(postId) })
-                    const obj_ids = postRet.post_comment.map(function(id) { return mongoose.Types.ObjectId(id); });
-                    await Comment.deleteMany({_id: {$in: obj_ids}})
-                    res.status(200).send({ message: 'success', contents: postId });
-                } catch (err) {
-                    res.status(500).send({
-                        message: 'error',
-                        error: 'ERR_SERVER_DB',
-                        detail: err,
-                    });
-                }
-            } else {
-                res.status(422).send({
-                    message: 'error',
-                    error: 'ERR_AUTHOR_UNKNOWN',
-                    detail: '',
-                });
-            }
-        } else {
-            res.status(422).send({
-                message: 'error',
-                error: 'ERR_POST_UNKNOWN',
-                detail: '',
-            });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({
-            message: 'error',
-            error: 'ERR_SERVER_DB',
-            detail: err,
-        });
-    }
-}
-
-exports.UpdatePostRating = async (req, res) => {
+router.post("/updatePostRating", async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     const { valid, userId, message } = validateToken(token);
 
@@ -364,4 +310,6 @@ exports.UpdatePostRating = async (req, res) => {
             }
         }
     );
-};
+});
+
+export default router;

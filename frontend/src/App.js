@@ -10,6 +10,8 @@ import PageSideBar from './container/PageSideBar';
 import PostListView from './container/PostListView';
 import PostSingleView from './container/PostSingleView';
 
+import { AuthProvider } from './hooks/useAuth';
+
 const LOCALSTORAGE_KEY = 'lsDarkMode';
 const lsDarkMode = localStorage.getItem(LOCALSTORAGE_KEY);
 
@@ -26,20 +28,15 @@ const fontConfig = 'Roboto, "Noto Sans TC", -apple-system, BlinkMacSystemFont, "
 function App() {
     // Dark Mode
     const [darkMode, setDarkMode] = useState(lsDarkMode === 'true' || false);
-    const [user, setUser] = useState({ name: '匿名使用者', avatar: 'https://www.w3schools.com/howto/img_avatar.png' });
-    const [commentNum, setCommentNum] = useState('');
-    const [postNum, setPostNum] = useState('');
-
-    useEffect(() => {
-        const theUser = localStorage.getItem('user');
-
-        if (theUser && !theUser.includes('undefined')) {
-            setUser(JSON.parse(theUser));
-        }
-    }, []);
-
     const handleThemeChange = () => setDarkMode(!darkMode);
     useEffect(() => localStorage.setItem(LOCALSTORAGE_KEY, darkMode), [darkMode]);
+
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        const usrLsItem = localStorage.getItem('user');
+        if (usrLsItem && !usrLsItem.includes('undefined')) setUser(JSON.parse(usrLsItem));
+    }, []);
 
     return (
         <ConfigProvider
@@ -49,35 +46,31 @@ function App() {
             }}
             autoInsertSpaceInButton={false}
         >
-            <Router>
-                <PageHeader
-                    darkMode={darkMode}
-                    handleThemeChange={handleThemeChange}
-                    userEmail={user?.email}
-                />
-                <MainWrapper>
-                    <PageMenu />
-                    <Routes>
-                        {/* Home Page */}
-                        <Route path="/" element={<PostListView />} />
-                        {/* Page List */}
-                        <Route path="/posts" element={<PostListView />} />
-                        <Route path="/posts/topic/:topicName" element={<PostListView />} />
-                        <Route path="/posts/topic/:topicName/:order" element={<PostListView />} />
-                        <Route path="/posts/topic/:topicName/:order/:page" element={<PostListView />} />
-                        {/* Page Single View */}
-                        <Route path="/posts/:postId" element={<PostSingleView />} />
-                    </Routes>
-                    <PageSideBar
-                        username={user.name}
-                        avatar={user.avatar}
-                        commentNum={commentNum}
-                        postNum={postNum}
-                        setCommentNum={setCommentNum}
-                        setPostNum={setPostNum}
+            <AuthProvider>
+                <Router>
+                    <PageHeader
+                        darkMode={darkMode}
+                        handleThemeChange={handleThemeChange}
+                        user={user}
+                        setUser={setUser}
                     />
-                </MainWrapper>
-            </Router>
+                    <MainWrapper>
+                        <PageMenu />
+                        <Routes>
+                            {/* Home Page */}
+                            <Route path="/" element={<PostListView />} />
+                            {/* Page List */}
+                            <Route path="/posts" element={<PostListView />} />
+                            <Route path="/posts/topic/:topicName" element={<PostListView />} />
+                            <Route path="/posts/topic/:topicName/:order" element={<PostListView />} />
+                            <Route path="/posts/topic/:topicName/:order/:page" element={<PostListView />} />
+                            {/* Page Single View */}
+                            <Route path="/posts/:postId" element={<PostSingleView />} />
+                        </Routes>
+                        <PageSideBar user={user} />
+                    </MainWrapper>
+                </Router>
+            </AuthProvider>
         </ConfigProvider>
     );
 }
