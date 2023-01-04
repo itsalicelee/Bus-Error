@@ -27,6 +27,9 @@ function App() {
     // Dark Mode
     const [darkMode, setDarkMode] = useState(lsDarkMode === 'true' || false);
     const [user, setUser] = useState({ name: '匿名使用者', avatar: 'https://www.w3schools.com/howto/img_avatar.png' });
+    const [commentNum, setCommentNum] = useState('');
+    const [postNum, setPostNum] = useState('');
+
     useEffect(() => {
         const theUser = localStorage.getItem('user');
 
@@ -65,7 +68,14 @@ function App() {
                         {/* Page Single View */}
                         <Route path="/posts/:postId" element={<PostSingleView />} />
                     </Routes>
-                    <PageSideBar username={user.name} avatar={user.avatar} />
+                    <PageSideBar
+                        username={user.name}
+                        avatar={user.avatar}
+                        commentNum={commentNum}
+                        postNum={postNum}
+                        setCommentNum={setCommentNum}
+                        setPostNum={setPostNum}
+                    />
                 </MainWrapper>
             </Router>
         </ConfigProvider>

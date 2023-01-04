@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react';
 import {
     Card, Image, Row, Statistic,
 } from 'antd';
@@ -20,7 +20,22 @@ const CenterText = styled.p`
 `;
 
 function PageSideBar(props) {
-    const { username, avatar } = props;
+    const {
+        username, avatar, commentNum, postNum,
+    } = props;
+    // const [commentNum, setCommentNum] = useState(0);
+
+    // useEffect(() => {
+    //     axios
+    //         .get('/GetCommentNum', {
+    //             params: { postId },
+    //             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    //         })
+    //         .then((res) => {
+    //             setCommentNum(res.data.contents[0]);
+    //         });
+    // }, [postId]);
+
     return (
         <Card title="使用者資訊" style={{ width: '200px', maxHeight: '500px' }}>
             <Image
@@ -35,10 +50,11 @@ function PageSideBar(props) {
                     { username }
                 </CenterText>
                 <Row gutter={8}>
-                    <Statistic title="Comment" value={123} prefix={<CommentOutlined />} />
+                    <Statistic title="留言" value={commentNum === '' ? '請先登入' : commentNum} valueStyle={postNum === '' ? { fontSize: 16 } : {}} prefix={<CommentOutlined />} />
                 </Row>
+                <br />
                 <Row gutter={8}>
-                    <Statistic title="Question" value={35} prefix={<QuestionCircleOutlined />} />
+                    <Statistic title="發問" value={postNum === '' ? '請先登入' : postNum} valueStyle={postNum === '' ? { fontSize: 16 } : {}} prefix={<QuestionCircleOutlined />} />
                 </Row>
             </InfoWrapper>
 
@@ -49,6 +65,8 @@ function PageSideBar(props) {
 PageSideBar.propTypes = {
     username: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
+    commentNum: PropTypes.string.isRequired,
+    postNum: PropTypes.string.isRequired,
 };
 
 export default PageSideBar;
