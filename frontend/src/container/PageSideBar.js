@@ -90,7 +90,21 @@ function PageSideBar() {
                         <SideStatistic title="已發表回答" value={user.counts.commentAll} unit="則" icon={faCommentDots} suffix={`其中 ${user.counts.commentAdopted} 則獲採納`} />
                     </InfoWrapper>
                 ) : (
-                    <InfoWrapper />
+                    <InfoWrapper>
+                        <Text>歡迎光臨！</Text>
+                        <Title level={4} style={{ marginTop: 2 }}>立即加入會員，<br />並使用以下功能</Title>    {/* eslint-disable-line */}
+                        <div style={{ marginTop: 16 }}>
+                            <Title level={5} style={{ marginTop: 2, marginBottom: 2 }}>自由提問</Title>
+                            <Text type="secondary" style={{ display: 'block', marginBottom: 8 }}>碰到困難了嗎？不妨向社群伙伴提問，讓大家一起跟你找出答案。</Text>
+                        </div>
+                        <div style={{ marginTop: 16 }}>
+                            <Title level={5} style={{ marginTop: 2, marginBottom: 2 }}>盡情討論</Title>
+                            <Text type="secondary" style={{ display: 'block', marginBottom: 8 }}>在此尋找和你遇上相同疑難的人，一起討論問題、分享見解，找出最佳解決方案。</Text>
+                        </div>
+                        <div style={{ marginTop: 16 }}>
+                            <Text style={{ display: 'block', marginBottom: 8 }}>更多功能敬請期待。</Text>
+                        </div>
+                    </InfoWrapper>
                 )}
             </Card>
         </SideBarContainer>
