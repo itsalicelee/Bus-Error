@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 // Ant Design
-import { Typography, Button, Tag, theme, message, Popconfirm } from 'antd'; /* eslint-disable-line */
+import { Typography, Button, Tag, theme, message, Popconfirm, Dropdown, Modal } from 'antd'; /* eslint-disable-line */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 
 import MarkdownContainer from '../components/MarkdownContainer';
 import PublishInfo from '../components/PublishInfo';
@@ -18,6 +20,15 @@ const { useToken } = theme;
 const PostContainer = styled.div`
     border-radius: 8px;
     box-shadow: 0px 2px 6px #00000017;
+    .material-symbols-outlined {
+        vertical-align: center;
+        font-size: 18px;
+        font-variation-settings:
+            'FILL' 1,
+            'wght' 500,
+            'GRAD' -25,
+            'opsz' 20
+    }
 `;
 
 const PostHeadContainer = styled.div`
@@ -54,6 +65,11 @@ const PostActionContainer = styled.div`
     border-top: 1px solid #00000017;
 `;
 
+const FaIcon = styled(FontAwesomeIcon)`
+    width: 16px;
+    margin-right: 8px;
+`;
+
 function PostSingleContent(props) {
     const { token } = useToken();
     const { postData } = props;
@@ -62,6 +78,7 @@ function PostSingleContent(props) {
     // Modal & Message
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const [showInfoModal, setShowInfoModal] = useState(false);
 
     const onSubmitSuccess = () => {
         messageApi.open({ type: 'success', content: '提問成功' });
@@ -74,6 +91,9 @@ function PostSingleContent(props) {
         } else {
             messageApi.open({ type: 'warning', content: '登入之後才能提問' });
         }
+    };
+    const onUserMenuClick = () => {
+        setShowInfoModal(true);
     };
 
     const handleCancel = () => setIsModalOpen(false);
@@ -154,6 +174,14 @@ function PostSingleContent(props) {
             messageApi.open({ type: 'warning', content: '登入之後才能刪除文章' });
         }
     };
+    const hideInfoModal = () => setShowInfoModal(false);
+
+    const myInfoButton = (
+        <>
+            <FaIcon icon={faTrash} style={{ marginRight: 7, marginLeft: 1 }} />
+            <span>刪除貼文</span>
+        </>
+    );
 
     return (
         <PostContainer style={{ background: token.colorBgContainer }}>
@@ -191,27 +219,52 @@ function PostSingleContent(props) {
                     <VoteButton type="up" checked={userLiked} onClick={() => onVoteButtonClick('up')} />
                     <VoteButton type="down" checked={userDisliked} onClick={() => onVoteButtonClick('down')} />
                     <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>{ rate }</Text>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Modal
+                        open={showInfoModal}
+                        onCancel={hideInfoModal}
+                        title="確定要刪除貼文？"
+                        onOk={onDeleteButtonClick}
+                        okText="確認"
+                        cancelText="取消"
+                    >
+                        <p>此動作不可復原</p>
+                    </Modal>
+                    <PublishInfo
+                        actionText="提問於"
+                        date={postData.post_createdAt}
+                        avatar={postData.post_author.user_avatar}
+                        username={postData.post_author.user_name}
+                    />
                     {(postData.isAuthor)
                         ? (
-                            <Popconfirm
-                                placement="topLeft"
-                                title="確定刪除貼文？"
-                                description="注意：此動作無法復原"
-                                onConfirm={onDeleteButtonClick}
-                                okText="Yes"
-                                cancelText="No"
+                            <Dropdown
+                                placement="bottomRight"
+                                menu={{
+                                    items: [
+                                        { label: myInfoButton, key: 'myinfo', danger: 'true' },
+                                    ],
+                                    onClick: onUserMenuClick,
+                                }}
                             >
-                                <Button style={{ marginLeft: 16 }} size="small">刪除貼文</Button>
-                            </Popconfirm>
+                                <Button
+                                    type="text"
+                                    shape="circle"
+                                    size="small"
+                                    style={{
+                                        fontSize: 16,
+                                        marginBottom: 3.25,
+                                        marginLeft: 6,
+                                        color: token.colorTextTertiary,
+                                    }}
+                                >
+                                    <FontAwesomeIcon icon={faEllipsisVertical} />
+                                </Button>
+                            </Dropdown>
                         )
                         : '' }
                 </div>
-                <PublishInfo
-                    actionText="提問於"
-                    date={postData.post_createdAt}
-                    avatar={postData.post_author.user_avatar}
-                    username={postData.post_author.user_name}
-                />
             </PostActionContainer>
         </PostContainer>
     );

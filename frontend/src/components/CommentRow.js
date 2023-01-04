@@ -171,7 +171,9 @@ function CommentRow(props) {
                                 size="small"
                                 onClick={onAdoptButtonClick}
                             >
-                                採納
+                                {(commentData.adopted)
+                                    ? '取消採納'
+                                    : '採納'}
                             </Button>
                         ) : ''}
                     </div>
