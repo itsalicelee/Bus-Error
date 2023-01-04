@@ -53,7 +53,7 @@ const ActionContainer = styled.div`
 `;
 
 function CommentRow(props) {
-    const { commentData, postId, onAdobted } = props;
+    const { commentData, postId, onAdopted } = props;
     const { token } = useToken();
     const {
         colorWhite,
@@ -116,7 +116,7 @@ function CommentRow(props) {
                     },
                 })
                 .then((res) => {
-                    onAdobted(res.data.contents);
+                    onAdopted(res.data.contents);
                 })
                 .catch((err) => {
                     switch (err.response.data.error) {
@@ -189,7 +189,7 @@ function CommentRow(props) {
 CommentRow.propTypes = {
     commentData: PropTypes.object.isRequired,      /* eslint-disable-line */
     postId: PropTypes.string.isRequired,
-    onAdobted: PropTypes.func.isRequired,
+    onAdopted: PropTypes.func.isRequired,
 };
 
 export default CommentRow;

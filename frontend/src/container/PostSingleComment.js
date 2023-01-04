@@ -61,7 +61,7 @@ function PostSingleComment(props) {
         setPostComments([...postComments, comment]);
     };
 
-    const onAdobted = (commentId) => {
+    const onAdopted = (commentId) => {
         setPostComments(postComments.map((comment) => (
             (comment.comment_id === commentId)
                 ? Object.assign(comment, { adopted: !comment.adopted })
@@ -116,7 +116,7 @@ function PostSingleComment(props) {
                                 key={postComment.comment_id}
                                 commentData={postComment}
                                 postId={postId}
-                                onAdobted={onAdobted}
+                                onAdopted={onAdopted}
                             />
                         ))
                 )}
@@ -129,7 +129,7 @@ function PostSingleComment(props) {
                                 key={postComment.comment_id}
                                 commentData={postComment}
                                 postId={postId}
-                                onAdobted={onAdobted}
+                                onAdopted={onAdopted}
                             />
                         ))
                 )}
