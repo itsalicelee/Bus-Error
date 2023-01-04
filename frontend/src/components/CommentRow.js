@@ -53,7 +53,7 @@ const ActionContainer = styled.div`
 `;
 
 function CommentRow(props) {
-    const { commentData } = props;
+    const { commentData, postId, onAdobted } = props;
     const { token } = useToken();
     const {
         colorWhite,
@@ -104,6 +104,46 @@ function CommentRow(props) {
         }
     };
 
+    const onAdoptButtonClick = () => {
+        if (localStorage.getItem('token')) {
+            axios
+                .post('/adoptComment', {
+                    postId,
+                    commentId: commentData.comment_id,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+                .then((res) => {
+                    onAdobted(res.data.contents);
+                })
+                .catch((err) => {
+                    switch (err.response.data.error) {
+                    case 'ERR_AUTH_NOSIGN':
+                        messageApi.open({ type: 'error', content: '請先登入', duration: 5 });
+                        break;
+                    case 'ERR_COMMENT_UNKNOWN':
+                        messageApi.open({ type: 'error', content: '留言不存在或已經被刪除', duration: 5 });
+                        break;
+                    case 'ERR_POST_UNKNOWN':
+                        messageApi.open({ type: 'error', content: '貼文不存在或已經被刪除', duration: 5 });
+                        break;
+                    case 'ERR_AUTHOR_UNKNOWN':
+                        messageApi.open({ type: 'error', content: '您必須為此篇貼文之作者才可採納發言', duration: 5 });
+                        break;
+                    case 'ERR_SERVER_DB':
+                        messageApi.open({ type: 'error', content: '系統無法處理您的請求，請檢查請求內容或稍候再試。', duration: 5 });
+                        break;
+                    default:
+                        break;
+                    }
+                });
+        } else {
+            messageApi.open({ type: 'warning', content: '登入之後才能採納留言' });
+        }
+    };
+
     return (
         <Container style={{ borderBottomColor: colorBorder }}>
             { contextHolder }
@@ -113,19 +153,27 @@ function CommentRow(props) {
                 <VoteButton type="down" checked={userDisliked} onClick={() => onVoteButtonClick('down')} />
             </VoteContainer>
             <MainContainer>
-                {commentData && commentData.comment_adopt && (
+                {commentData && commentData.adopted && (
                     <AdoptBadge style={{ background: colorPrimary, color: colorWhite }}>
                         <FAIcon icon={faCheck} style={{ fontSize: 14, marginRight: 4 }} />
                         <Text style={{ color: colorWhite, fontSize: 12, lineHeight: '12px' }}>獲採納的答案</Text>
                     </AdoptBadge>
                 )}
-                <div style={{ minHeight: '64px' }}>
+                <div style={{ minHeight: (commentData.adopted) ? 0 : '64px' }}>
                     <MarkdownContainer>
                         {commentData.content}
                     </MarkdownContainer>
                 </div>
                 <ActionContainer>
-                    <div />
+                    <div>
+                        <Button
+                            type="text"
+                            size="small"
+                            onClick={onAdoptButtonClick}
+                        >
+                            Adopt
+                        </Button>
+                    </div>
                     <PublishInfo
                         actionText="回答於"
                         date={commentData.createdAt}
@@ -140,6 +188,8 @@ function CommentRow(props) {
 
 CommentRow.propTypes = {
     commentData: PropTypes.object.isRequired,      /* eslint-disable-line */
+    postId: PropTypes.string.isRequired,
+    onAdobted: PropTypes.func.isRequired,
 };
 
 export default CommentRow;

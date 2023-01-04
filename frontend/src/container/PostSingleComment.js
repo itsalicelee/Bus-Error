@@ -61,6 +61,14 @@ function PostSingleComment(props) {
         setPostComments([...postComments, comment]);
     };
 
+    const onAdobted = (commentId) => {
+        setPostComments(postComments.map((comment) => (
+            (comment.comment_id === commentId)
+                ? Object.assign(comment, { adopted: !comment.adopted })
+                : Object.assign(comment, { adopted: false })
+        )));
+    };
+
     const commentSortOptions = [
         { label: '最高分', value: 1 },
         { label: '最新', value: 0 },
@@ -102,17 +110,27 @@ function PostSingleComment(props) {
                 )}
                 { postComments.length > 0 && (
                     postComments
-                        .filter((e) => e.comment_adopt)
+                        .filter((e) => e.adopted)
                         .map((postComment) => (
-                            <CommentRow key={postComment.comment_id} commentData={postComment} />
+                            <CommentRow
+                                key={postComment.comment_id}
+                                commentData={postComment}
+                                postId={postId}
+                                onAdobted={onAdobted}
+                            />
                         ))
                 )}
                 { postComments.length > 0 && (
                     postComments
-                        .filter((e) => !e.comment_adopt)
+                        .filter((e) => !e.adopted)
                         .sort(commentSortFuncs[commentSortValue])
                         .map((postComment) => (
-                            <CommentRow key={postComment.comment_id} commentData={postComment} />
+                            <CommentRow
+                                key={postComment.comment_id}
+                                commentData={postComment}
+                                postId={postId}
+                                onAdobted={onAdobted}
+                            />
                         ))
                 )}
             </CommentList>
