@@ -43,7 +43,7 @@ function PageAuthButton() {
     useEffect(() => {
         if (window.google) {
             window.google.accounts.id.initialize({
-                client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+                client_id: '335796492667-44oo6rbp51pjp6i9q5ui5b2ick7vstmb.apps.googleusercontent.com',
                 callback: handleGoogle,
             });
             window.google.accounts.id.renderButton(document.getElementById('sign-in-btn'), {
