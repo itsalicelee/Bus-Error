@@ -33,7 +33,7 @@ const CommentList = styled.ul`
 function PostSingleComment(props) {
     const { token } = useToken();
     const { postComments: postCts, postId } = props;
-    const [commentSortValue, setCommentSortValue] = useState(0);
+    const [commentSortValue, setCommentSortValue] = useState(1);
     const [showReplySlot, setShowReplySlot] = useState(false);
     const [postComments, setPostComments] = useState(postCts);
     const [messageApi, contextHolder] = message.useMessage();
@@ -62,13 +62,13 @@ function PostSingleComment(props) {
     };
 
     const commentSortOptions = [
-        { label: '最高分', value: 0 },
-        { label: '最新', value: 1 },
+        { label: '最高分', value: 1 },
+        { label: '最新', value: 0 },
     ];
 
     const commentSortFuncs = [
-        (a, b) => (dayjs(a.createdAt).diff(dayjs(b.createdAt))),
-        (a, b) => (a.comment_rate - b.comment_rate),
+        (a, b) => (dayjs(b.createdAt).diff(dayjs(a.createdAt))),
+        (a, b) => (b.comment_rate - a.comment_rate),
     ];
 
     return (

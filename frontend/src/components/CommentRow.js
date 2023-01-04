@@ -119,9 +119,11 @@ function CommentRow(props) {
                         <Text style={{ color: colorWhite, fontSize: 12, lineHeight: '12px' }}>獲採納的答案</Text>
                     </AdoptBadge>
                 )}
-                <MarkdownContainer>
-                    {commentData.content}
-                </MarkdownContainer>
+                <div style={{ minHeight: '64px' }}>
+                    <MarkdownContainer>
+                        {commentData.content}
+                    </MarkdownContainer>
+                </div>
                 <ActionContainer>
                     <div />
                     <PublishInfo
