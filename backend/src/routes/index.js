@@ -22,6 +22,7 @@ function main(app) {
     app.get('/api/v1/getSinglePost', wrap(postRoute.GetSinglePost));
     app.post('/api/v1/createPost', wrap(postRoute.CreatePost));
     app.post('/api/v1/updatePostRating', wrap(postRoute.UpdatePostRating));
+    app.post('/api/v1/deletePost', wrap(postRoute.DeletePost));
     // app.get('/api/v1/updatePost', wrap(postRoute.UpdatePost));
 
     /* Comment Route */
