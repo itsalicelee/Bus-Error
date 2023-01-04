@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 // Ant Design
 import { Typography, Button, Avatar } from 'antd';
 import { gold } from '@ant-design/colors';
-// import { UserOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -17,7 +16,6 @@ function PublishInfo(props) {
         <div>
             <Button type="text" size="small" shape="round" style={{ padding: '0 6px 0 0px', marginRight: -2 }}>
                 <Avatar
-                    // icon={<UserOutlined />}
                     src={avatar}
                     size="small"
                     style={{

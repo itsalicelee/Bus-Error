@@ -1,16 +1,13 @@
-import { React, useState, useEffect } from 'react';
+import { React } from 'react';
 import { Link } from 'react-router-dom';
 import Input from 'antd/es/input/Input';
 import { Button, Typography, theme } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
-
-import useFetch from '../hooks/useFetch';
 
 import BusErrorLogoDark from '../assets/BusErrorLogoDark.svg';
 import BusErrorLogoLight from '../assets/BusErrorLogoLight.svg';
+import PageAuthButton from './PageAuthButton';
 
 const { Title } = Typography;
 const { useToken } = theme;
@@ -25,7 +22,15 @@ const Header = styled.header`
     padding: 0 16px;
     justify-content: center;
     align-items: center;
-}`;
+    .material-symbols-outlined {
+        font-size: 20px;
+        font-variation-settings:
+            'FILL' 1,
+            'wght' 500,
+            'GRAD' -25,
+            'opsz' 20
+    }
+`;
 
 const Container = styled.div`
     display: flex;
@@ -42,53 +47,19 @@ const HeaderHomeContainer = styled(Title)`
     display: flex;
 `;
 
-const SignInButton = styled.div`
-    > div > div:first-child,
-    > div > div:last-child {
-        display: none;
-    }
+const ThemeChangeButton = styled(Button)`
+    margin-right: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 function PageHeader(props) {
-    const { darkMode, handleThemeChange, userEmail } = props;
+    const { darkMode, handleThemeChange } = props;
 
     const { token } = useToken();
     document.body.style.backgroundColor = (!darkMode) ? '#FAFAFA' : '#050505';
     const onThemeChange = () => handleThemeChange();
-
-    const [signInStage, setSignInStage] = useState(0);
-    const { handleGoogle } = useFetch();
-
-    useEffect(() => {
-        if (window.google) {
-            window.google.accounts.id.initialize({
-                client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-                callback: handleGoogle,
-            });
-            window.google.accounts.id.renderButton(document.getElementById('sign-in-btn'), {
-                theme: darkMode ? 'filled_black' : 'outline',
-                locale: 'zh_TW',
-                shape: 'pill',
-                size: 'medium',
-            });
-        }
-    }, [handleGoogle]);
-
-    const onSignInBtnClick = () => setSignInStage(signInStage + 1);
-
-    const onSignOutBtnClick = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        window.location.reload();
-    };
-
-    useEffect(() => {
-        if (signInStage === 1) {
-            setTimeout(() => setSignInStage(0), 5000);
-        }
-    }, [signInStage]);
-
-    useEffect(() => { if (userEmail) setSignInStage(2); }, [userEmail]);
 
     return (
         <Header>
@@ -99,12 +70,10 @@ function PageHeader(props) {
             </HeaderHomeContainer>
             <Input placeholder="搜尋" style={{ maxWidth: 500, flex: 1 }} />
             <Container>
-                <Button onClick={onThemeChange} type="text" shape="circle" style={{ marginRight: 8, color: token.colorTextTertiary }}>
-                    <FontAwesomeIcon icon={(darkMode) ? faMoon : faSun} />
-                </Button>
-                { (signInStage === 0) && (<Button type="primary" shape="round" onClick={onSignInBtnClick}>登入</Button>) }
-                { (signInStage === 1) && (<SignInButton id="sign-in-btn" data-text="signup_with" />) }
-                { (signInStage === 2) && (<Button type="primary" shape="round" onClick={onSignOutBtnClick}>登出</Button>) }
+                <ThemeChangeButton onClick={onThemeChange} type="text" shape="circle" style={{ color: token.colorTextTertiary }}>
+                    <span className="material-symbols-outlined">{ darkMode ? 'light_mode' : 'dark_mode' }</span>
+                </ThemeChangeButton>
+                <PageAuthButton />
             </Container>
         </Header>
     );
@@ -113,7 +82,6 @@ function PageHeader(props) {
 PageHeader.propTypes = {
     darkMode: PropTypes.bool.isRequired,
     handleThemeChange: PropTypes.func.isRequired,
-    userEmail: PropTypes.string,
 };
 
 export default PageHeader;
