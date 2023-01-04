@@ -312,4 +312,60 @@ router.post("/updatePostRating", async (req, res) => {
     );
 });
 
+router.post("/deletePost", async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const { valid, userId, message } = validateToken(token);
+
+    const body = req.body;
+    const { postId } = body;
+
+    if (!valid) {
+        res.status(403).send({
+            message: 'error',
+            error: 'ERR_AUTH_NOSIGN',
+            detail: message,
+        });
+        return;
+    }
+
+    try {
+        const postRet = (await Post.findOne({ _id: mongoose.Types.ObjectId(postId) }));
+        if (postRet) {
+            if (userId === postRet.post_author.toString()) {
+                try {
+                    await Post.deleteOne({ _id: mongoose.Types.ObjectId(postId) })
+                    const obj_ids = postRet.post_comment.map(function(id) { return mongoose.Types.ObjectId(id); });
+                    await Comment.deleteMany({_id: {$in: obj_ids}})
+                    res.status(200).send({ message: 'success', contents: postId });
+                } catch (err) {
+                    res.status(500).send({
+                        message: 'error',
+                        error: 'ERR_SERVER_DB',
+                        detail: err,
+                    });
+                }
+            } else {
+                res.status(422).send({
+                    message: 'error',
+                    error: 'ERR_AUTHOR_UNKNOWN',
+                    detail: '',
+                });
+            }
+        } else {
+            res.status(422).send({
+                message: 'error',
+                error: 'ERR_POST_UNKNOWN',
+                detail: '',
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            message: 'error',
+            error: 'ERR_SERVER_DB',
+            detail: err,
+        });
+    }
+})
+
 export default router;
