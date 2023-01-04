@@ -156,4 +156,108 @@ router.post("/updateCommentRating", async (req, res) => {
     );
 });
 
+router.post("/adoptComment", async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const { valid, userId, message } = validateToken(token);
+
+    const body = req.body;
+    const { commentId, postId } = body;
+
+    if (!valid) {
+        res.status(403).send({
+            message: 'error',
+            error: 'ERR_AUTH_NOSIGN',
+            detail: message,
+        });
+        return;
+    }
+    
+    try {
+        const postRet = (await Post.findOne({ _id: mongoose.Types.ObjectId(postId) }));
+        if (postRet) {
+            if (userId === postRet.post_author.toString()) {
+                if ((postRet.post_comment.indexOf(commentId)) !== -1) {
+                    const obj_ids = postRet.post_comment.map(function(id) { return mongoose.Types.ObjectId(id); });
+                    const adobtedIdExist = await Comment.findOne({_id: {$in: obj_ids}, adopted: true});
+                    if (adobtedIdExist) {
+                        if (adobtedIdExist._id.toString() === mongoose.Types.ObjectId(commentId).toString()) {
+                            Post.findOneAndUpdate(
+                                { _id: mongoose.Types.ObjectId(postId) },
+                                { $set: { post_commentHasAdopt: false }},
+                                {},
+                                () => {},
+                            )
+                        } else {
+                            Post.findOneAndUpdate(
+                                { _id: mongoose.Types.ObjectId(postId) },
+                                { $set: { post_commentHasAdopt: true }},
+                                {},
+                                () => {},
+                            )
+                        }
+                        for (let i = 0; i < postRet.post_comment.length; i++) {
+                            if (postRet.post_comment[i].toString() === mongoose.Types.ObjectId(commentId).toString() && 
+                            adobtedIdExist._id.toString() !== mongoose.Types.ObjectId(commentId).toString()) {
+                                Comment.findOneAndUpdate(
+                                    { _id: mongoose.Types.ObjectId(commentId) },
+                                    { $set: { adopted: true } },
+                                    {},
+                                    () => {},
+                                )
+                            } else {
+                                Comment.findOneAndUpdate(
+                                    { _id: postRet.post_comment[i] },
+                                    { $set: { adopted: false } },
+                                    {},
+                                    () => {},
+                                )
+                            }
+                        }
+                    } else {
+                        Post.findOneAndUpdate(
+                            { _id: mongoose.Types.ObjectId(postId) },
+                            { $set: { post_commentHasAdopt: true }},
+                            {},
+                            () => {},
+                        )
+                        Comment.findOneAndUpdate(
+                            { _id: mongoose.Types.ObjectId(commentId) },
+                            { $set: { adopted: true } },
+                            {},
+                            () => {},
+                        )
+                    }
+                    res.status(200).send({ message: 'success', contents: commentId });
+                } else {
+                    res.status(422).send({
+                        message: 'error',
+                        error: 'ERR_COMMENT_UNKNOWN',
+                        detail: '',
+                    });
+                }
+            } else {
+                res.status(422).send({
+                    message: 'error',
+                    error: 'ERR_AUTHOR_UNKNOWN',
+                    detail: '',
+                });
+            }
+
+        } else {
+            res.status(422).send({
+                message: 'error',
+                error: 'ERR_POST_UNKNOWN',
+                detail: '',
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            message: 'error',
+            error: 'ERR_SERVER_DB',
+            detail: err,
+        });
+    }
+})
+
 export default router;
