@@ -1,5 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 import { validateToken } from '../tools';
 import User from '../models/user';
@@ -33,30 +34,36 @@ exports.SignInUser = async (req, res) => {
 
             const profile = verificationResponse?.payload;
 
-            const userExists = await User.exists({ email: profile?.email });
+            const userInfo = await User.findOne({ email: profile?.email });
 
-            if (userExists) {
+            if (userInfo) {
+                if (profile?.picture) {
+                    User.findOneAndUpdate({ _id: userInfo._id }, {
+                        $set: { avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c' }
+                    }, {}, () => {});
+                }
                 res.status(200).json({
                     message: 'success_signin',
                     user: {
-                        name: generateUsername(profile?.given_name, profile?.family_name),
-                        email: profile?.email,
-                        avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
-                        token: jwt.sign({ id: userExists._id }, process.env.JWT_SECRET, { expiresIn: '1d' }),
+                        name: userInfo.name,
+                        email: userInfo.email,
+                        avatar: userInfo.avatar ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
+                        token: jwt.sign({ id: userInfo._id }, process.env.JWT_SECRET, { expiresIn: '1d' }),
                     },
                 });
             } else {
                 const newUser = new User({
                     name: generateUsername(profile?.given_name, profile?.family_name),
                     email: profile?.email,
+                    avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
                 });
                 await newUser.save((_, user) => {
                     res.status(200).json({
                         message: 'success_signup',
                         user: {
-                            name: generateUsername(profile?.given_name, profile?.family_name),
+                            name: user.name,
                             email: user.email,
-                            avatar: profile?.picture ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
+                            avatar: user.avatar,
                             token: jwt.sign({ id: user._id  }, process.env.JWT_SECRET, { expiresIn: '1d' }),
                         },
                     });
@@ -71,7 +78,45 @@ exports.SignInUser = async (req, res) => {
     }
 };
 
+exports.GetUserInfo = async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const { valid, userId, message } = validateToken(token);
+
+    const body = req.body;
+    const { postId, option } = body;
+    
+    if (!valid) {
+        res.status(200).json({
+            message: 'success',
+            user: {},
+        });
+        return;
+    }
+
+    User.findOne({
+        _id: mongoose.Types.ObjectId(userId),
+    }).exec((err, data) => {
+        if (err) {
+            res.status(500).send({
+                message: 'error',
+                error: 'ERR_SERVER_DB',
+                detail: err,
+            });
+        } else {
+            res.status(200).json({
+                message: 'success',
+                user: {
+                    name: data.name,
+                    email: data.email,
+                    avatar: data.avatar ?? 'https://lh3.googleusercontent.com/a/AEdFTp6ort-2DsEdlK0teHw1C4UQV_j0l-VmQ5DyxOfT=s96-c',
+                },
+            });
+        }
+    })
+};
+
 exports.UpdateUser = async (req, res) => {
+    
     // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYjJmZmEwNmIzMTkwMmNkZDBlNzBlOSIsImlhdCI6MTY3MjY3NTMxNiwiZXhwIjoxNjcyNzYxNzE2fQ._bK7FYti-ysFquF7qjtN891dVIA7o5Q7wXGX5azGqGA';
 
     // console.log(validateToken(token))

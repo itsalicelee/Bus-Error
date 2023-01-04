@@ -58,7 +58,12 @@ function PostRow(props) {
                             </Tag>
                         ))}
                     </div>
-                    <PublishInfo actionText="提問於" date={postItem.post_createdAt} username={postItem.post_author.user_name} />
+                    <PublishInfo
+                        actionText="提問於"
+                        date={postItem.post_createdAt}
+                        avatar={postItem.post_author.user_avatar}
+                        username={postItem.post_author.user_name}
+                    />
                 </div>
             </ContentContainer>
         </Container>

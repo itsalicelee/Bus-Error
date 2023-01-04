@@ -124,7 +124,12 @@ function CommentRow(props) {
                 </MarkdownContainer>
                 <ActionContainer>
                     <div />
-                    <PublishInfo actionText="回答於" date={commentData.createdAt} username={commentData.author.user_name} />
+                    <PublishInfo
+                        actionText="回答於"
+                        date={commentData.createdAt}
+                        avatar={commentData.author.user_avatar}
+                        username={commentData.author.user_name}
+                    />
                 </ActionContainer>
             </MainContainer>
         </Container>

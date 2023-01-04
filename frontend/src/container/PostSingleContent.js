@@ -154,7 +154,12 @@ function PostSingleContent(props) {
                     <VoteButton type="down" checked={userDisliked} onClick={() => onVoteButtonClick('down')} />
                     <Text style={{ fontSize: 16, lineHeight: 2, marginLeft: 8 }}>{ rate }</Text>
                 </div>
-                <PublishInfo actionText="提問於" date={postData.post_createdAt} username={postData.post_author.user_name} />
+                <PublishInfo
+                    actionText="提問於"
+                    date={postData.post_createdAt}
+                    avatar={postData.post_author.user_avatar}
+                    username={postData.post_author.user_name}
+                />
             </PostActionContainer>
         </PostContainer>
     );

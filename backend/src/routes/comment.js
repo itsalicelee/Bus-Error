@@ -42,9 +42,9 @@ exports.CreateComment = async (req, res) => {
                         {},
                         () => {}
                     )
-                    const { _id: user_id, name: user_name } = await User.findOne({ _id: ct.author });
+                    const { _id: user_id, name: user_name, avatar: user_avatar } = await User.findOne({ _id: ct.author });
                     let comment = JSON.parse(JSON.stringify(ct));
-                    comment.author = { user_id, user_name };
+                    comment.author = { user_id, user_name, user_avatar };
                     comment.comment_id = comment._id;
                     delete comment._id;
                     comment.comment_rate = 0;

@@ -101,8 +101,8 @@ exports.GetPostList = async (req, res) => {
                 const { tag_identifier, tag_displayName } = await Tag.findOne({ _id: mongoose.Types.ObjectId(dataItem.post_topic) });
                 dataItem.post_topic = { tag_identifier, tag_displayName };
                 
-                const { _id: user_id, name: user_name } = await User.findOne({ _id: mongoose.Types.ObjectId(dataItem.post_author) });
-                dataItem.post_author = { user_id, user_name };
+                const { _id: user_id, name: user_name, avatar: user_avatar } = await User.findOne({ _id: mongoose.Types.ObjectId(dataItem.post_author) });
+                dataItem.post_author = { user_id, user_name, user_avatar };
 
                 dataItem.post_id = dataItem._id;
                 delete dataItem._id;
@@ -194,8 +194,8 @@ exports.GetSinglePost = async (req, res) => {
             const { tag_identifier, tag_displayName } = await Tag.findOne({ _id: mongoose.Types.ObjectId(dataItem.post_topic) });
             dataItem.post_topic = { tag_identifier, tag_displayName };
 
-            const { _id: user_id, name: user_name } = await User.findOne({ _id: mongoose.Types.ObjectId(dataItem.post_author) });
-            dataItem.post_author = { user_id, user_name };
+            const { _id: user_id, name: user_name, avatar: user_avatar } = await User.findOne({ _id: mongoose.Types.ObjectId(dataItem.post_author) });
+            dataItem.post_author = { user_id, user_name, user_avatar };
 
             dataItem.post_id = dataItem._id;
             delete dataItem._id;
@@ -208,8 +208,8 @@ exports.GetSinglePost = async (req, res) => {
 
             
             for (const commentItem of data[0].post_comment) {
-                const { _id: user_id, name: user_name } = await User.findOne({ _id: mongoose.Types.ObjectId(commentItem.author) });
-                commentItem.author = { user_id, user_name };
+                const { _id: user_id, name: user_name, avatar: user_avatar } = await User.findOne({ _id: mongoose.Types.ObjectId(commentItem.author) });
+                commentItem.author = { user_id, user_name, user_avatar };
                 commentItem.comment_id = commentItem._id;
                 delete commentItem._id;
 
