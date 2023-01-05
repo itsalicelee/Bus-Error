@@ -1,9 +1,9 @@
 import { React, useState } from 'react';
-import { Typography, Button, theme, message } from 'antd';    /* eslint-disable-line */
+import { Typography, Button, theme, message, Dropdown } from 'antd';    /* eslint-disable-line */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faXmark, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 
 import axios from '../api';
 
@@ -55,6 +55,11 @@ const ActionContainer = styled.div`
     justify-content: space-between;
 `;
 
+const FaIcon = styled(FAIcon)`
+    width: 16px;
+    margin-right: 8px;
+`;
+
 function CommentRow(props) {
     const { commentData, postId, onAdopted, isAuthor } = props; /* eslint-disable-line */
     const { token } = useToken();
@@ -69,6 +74,16 @@ function CommentRow(props) {
     const [userLiked, setUserLiked] = useState(commentData.comment_userLiked);
     const [userDisliked, setUserDisliked] = useState(commentData.comment_userDisliked);
     const [rate, setRate] = useState(commentData.comment_rate);
+
+    const postActionButton = (
+        <>
+            <FaIcon
+                icon={(commentData.adopted) ? faXmark : faCheck}
+                style={{ marginRight: 7, marginLeft: -1 }}
+            />
+            <span>{(commentData.adopted) ? '取消採納該留言' : '採納該留言'}</span>
+        </>
+    );
 
     const onVoteButtonClick = (dir) => {
         if (localStorage.getItem('token')) {
@@ -148,7 +163,7 @@ function CommentRow(props) {
     };
 
     return (
-        <Container style={{ borderBottomColor: colorBorder }}>
+        <Container style={{ borderBottomColor: colorBorder, position: 'relative' }}>
             { contextHolder }
             <VoteContainer>
                 <VoteButton type="up" checked={userLiked} onClick={() => onVoteButtonClick('up')} />
@@ -170,19 +185,7 @@ function CommentRow(props) {
                     </MarkdownContainer>
                 </div>
                 <ActionContainer>
-                    <div style={{ marginLeft: -4 }}>
-                        { isAuthor ? (
-                            <Button
-                                className="commentAdoptedButton"
-                                size="small"
-                                onClick={onAdoptButtonClick}
-                            >
-                                {(commentData.adopted)
-                                    ? '取消採納'
-                                    : '採納'}
-                            </Button>
-                        ) : ''}
-                    </div>
+                    <div style={{ marginLeft: -4 }} />
                     <PublishInfo
                         actionText="回答於"
                         date={commentData.createdAt}
@@ -191,6 +194,28 @@ function CommentRow(props) {
                     />
                 </ActionContainer>
             </MainContainer>
+            <Dropdown
+                placement="bottomRight"
+                menu={{
+                    items: [{ label: postActionButton, key: 'myinfo', danger: commentData.adopted }],
+                    onClick: onAdoptButtonClick,
+                }}
+            >
+                <Button
+                    type="text"
+                    shape="circle"
+                    style={{
+                        fontSize: 16,
+                        paddingTop: 3,
+                        color: token.colorTextTertiary,
+                        position: 'absolute',
+                        top: 9,
+                        right: -6,
+                    }}
+                >
+                    <FAIcon icon={faEllipsisVertical} />
+                </Button>
+            </Dropdown>
         </Container>
     );
 }
