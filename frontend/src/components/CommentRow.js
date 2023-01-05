@@ -36,6 +36,7 @@ const VoteContainer = styled.div`
 
 const MainContainer = styled.div`
     flex: 1;
+    overflow: auto;
 `;
 
 const AdoptBadge = styled.div`

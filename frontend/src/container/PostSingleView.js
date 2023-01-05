@@ -12,6 +12,7 @@ const MainContainer = styled.div`
     flex: 1;
     margin: 0 16px;
     padding-bottom: 32px;
+    overflow: auto;
 `;
 
 function PostListView() {

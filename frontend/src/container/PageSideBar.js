@@ -26,6 +26,7 @@ const InfoWrapper = styled.div`
 const SideBarContainer = styled.div`
     width: 200px;
     padding-right: 16px;
+    flex-shrink: 0;
 `;
 
 const Divider = styled(AntDivider)`

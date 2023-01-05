@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import useMenuData from '../hooks/useMenuData';
 
 const Menu = styled(AntdMenu)`
+    flex-shrink: 0 !important;
     background-color: #FAFAFA00;
     .ant-menu-item-selected {
         font-weight: 700;
