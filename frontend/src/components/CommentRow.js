@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React } from 'react';
 import { Typography, Button, theme, message, Dropdown } from 'antd';    /* eslint-disable-line */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -61,7 +61,7 @@ const FaIcon = styled(FAIcon)`
 `;
 
 function CommentRow(props) {
-    const { commentData, postId, onAdopted, isAuthor } = props; /* eslint-disable-line */
+    const { commentData, postId, onAdopted, isAuthor, onRated } = props; /* eslint-disable-line */
     const { token } = useToken();
     const {
         colorWhite,
@@ -71,9 +71,9 @@ function CommentRow(props) {
     } = token;
 
     const [messageApi, contextHolder] = message.useMessage();
-    const [userLiked, setUserLiked] = useState(commentData.comment_userLiked);
-    const [userDisliked, setUserDisliked] = useState(commentData.comment_userDisliked);
-    const [rate, setRate] = useState(commentData.comment_rate);
+    const userLiked = commentData.comment_userLiked;
+    const userDisliked = commentData.comment_userDisliked;
+    const rate = commentData.comment_rate;
 
     const postActionButton = (
         <>
@@ -98,9 +98,7 @@ function CommentRow(props) {
                 })
                 .then((res) => {
                     const content = res.data.contents;
-                    setUserLiked(content.comment_userLiked);
-                    setUserDisliked(content.comment_userDisliked);
-                    setRate(content.comment_rate);
+                    onRated(commentData.comment_id, content);
                 })
                 .catch((err) => {
                     switch (err.response.data.error) {
@@ -225,6 +223,7 @@ CommentRow.propTypes = {
     postId: PropTypes.string.isRequired,
     onAdopted: PropTypes.func.isRequired,
     isAuthor: PropTypes.bool.isRequired,
+    onRated: PropTypes.func.isRequired,
 };
 
 export default CommentRow;

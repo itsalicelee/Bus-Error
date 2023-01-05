@@ -69,6 +69,18 @@ function PostSingleComment(props) {
         )));
     };
 
+    const onRated = (commentId, content) => {
+        setPostComments(postComments.map((comment) => (
+            (comment.comment_id === commentId)
+                ? Object.assign(comment, {
+                    comment_rate: content.comment_rate,
+                    comment_userDisliked: content.comment_userDisliked,
+                    comment_userLiked: content.comment_userLiked,
+                })
+                : comment
+        )));
+    };
+
     const commentSortOptions = [
         { label: '最高分', value: 1 },
         { label: '最新', value: 0 },
@@ -118,6 +130,7 @@ function PostSingleComment(props) {
                                 postId={postId}
                                 onAdopted={onAdopted}
                                 isAuthor={isAuthor}
+                                onRated={onRated}
                             />
                         ))
                 )}
@@ -132,6 +145,7 @@ function PostSingleComment(props) {
                                 postId={postId}
                                 onAdopted={onAdopted}
                                 isAuthor={isAuthor}
+                                onRated={onRated}
                             />
                         ))
                 )}

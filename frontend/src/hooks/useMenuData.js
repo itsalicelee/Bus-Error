@@ -33,7 +33,6 @@ function useMenuData() {
                 trending
                     .sort((e1, e2) => ((e1.tag_identifier > e2.tag_identifier) ? 1 : -1))
                     .forEach((e) => {
-                        console.log(e);
                         preTagItems[0].children.push(tagChild(e.tag_identifier, e.tag_displayName));
                     });
             }
