@@ -118,6 +118,14 @@ router.get("/getUser", async (req, res) => {
                 detail: err,
             });
         } else {
+            console.log(data)
+            if (!data) {
+                res.status(200).json({
+                    message: 'success',
+                    user: {},
+                });
+                return;
+            }
             const postCount = await Post.find({ post_author: mongoose.Types.ObjectId(userId) }).count();
             const commentCountAll = await Comment.find({ author: mongoose.Types.ObjectId(userId) }).count();
             const commentCountAdopted = await Comment.find({ author: mongoose.Types.ObjectId(userId), adopted: true }).count();
