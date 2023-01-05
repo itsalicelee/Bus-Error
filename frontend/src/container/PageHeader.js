@@ -1,6 +1,5 @@
 import { React } from 'react';
 import { Link } from 'react-router-dom';
-import Input from 'antd/es/input/Input';
 import { Button, Typography, theme } from 'antd';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
