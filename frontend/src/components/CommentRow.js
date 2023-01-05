@@ -22,6 +22,8 @@ const Container = styled.li`
     padding: 16px 0;
     margin: 0 20px;
     border-bottom: 1px solid #FFFFFF00;
+    .commentAdoptedButton { opacity: 0.3; }
+    &:hover .commentAdoptedButton { opacity: 1; }
 `;
 
 const VoteContainer = styled.div`
@@ -154,7 +156,9 @@ function CommentRow(props) {
             </VoteContainer>
             <MainContainer>
                 {commentData && commentData.adopted && (
-                    <AdoptBadge style={{ background: colorPrimary, color: colorWhite }}>
+                    <AdoptBadge
+                        style={{ background: colorPrimary, color: colorWhite, marginLeft: -2.5 }}
+                    >
                         <FAIcon icon={faCheck} style={{ fontSize: 14, marginRight: 4 }} />
                         <Text style={{ color: colorWhite, fontSize: 12, lineHeight: '12px' }}>獲採納的答案</Text>
                     </AdoptBadge>
@@ -165,9 +169,10 @@ function CommentRow(props) {
                     </MarkdownContainer>
                 </div>
                 <ActionContainer>
-                    <div style={{ marginLeft: -5 }}>
+                    <div style={{ marginLeft: -4 }}>
                         { isAuthor ? (
                             <Button
+                                className="commentAdoptedButton"
                                 size="small"
                                 onClick={onAdoptButtonClick}
                             >

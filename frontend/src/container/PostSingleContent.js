@@ -176,9 +176,9 @@ function PostSingleContent(props) {
     };
     const hideInfoModal = () => setShowInfoModal(false);
 
-    const myInfoButton = (
+    const postActionButton = (
         <>
-            <FaIcon icon={faTrash} style={{ marginRight: 7, marginLeft: 1 }} />
+            <FaIcon icon={faTrash} style={{ marginRight: 7, marginLeft: -1 }} />
             <span>刪除貼文</span>
         </>
     );
@@ -228,6 +228,7 @@ function PostSingleContent(props) {
                         onOk={onDeleteButtonClick}
                         okText="確認"
                         cancelText="取消"
+                        width={400}
                     >
                         <p>此動作不可復原</p>
                     </Modal>
@@ -243,7 +244,7 @@ function PostSingleContent(props) {
                                 placement="bottomRight"
                                 menu={{
                                     items: [
-                                        { label: myInfoButton, key: 'myinfo', danger: 'true' },
+                                        { label: postActionButton, key: 'myinfo', danger: 'true' },
                                     ],
                                     onClick: onUserMenuClick,
                                 }}
@@ -251,11 +252,12 @@ function PostSingleContent(props) {
                                 <Button
                                     type="text"
                                     shape="circle"
-                                    size="small"
                                     style={{
                                         fontSize: 16,
-                                        marginBottom: 3.25,
-                                        marginLeft: 6,
+                                        marginTop: -1,
+                                        marginLeft: 4,
+                                        marginRight: -6,
+                                        paddingTop: 3,
                                         color: token.colorTextTertiary,
                                     }}
                                 >
