@@ -1,0 +1,39 @@
+[
+    {
+        "tag_isMainTag": true,
+        "tag_identifier": "ascii-art",
+        "tag_displayName": "ASCII Art"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "c-and-cpp",
+        "tag_displayName": "C & C++"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "chat",
+        "tag_displayName": "Chat"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "js-react",
+        "tag_displayName": "JS / React"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "js-vuejs",
+        "tag_displayName": "JS / Vue.js"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "judge-girl",
+        "tag_displayName": "Judge Girl"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "python",
+        "tag_displayName": "Python"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "leetcode",
+        "tag_displayName": "LeetCode"
+    }, {
+        "tag_isMainTag": true,
+        "tag_identifier": "pdogs",
+        "tag_displayName": "PDOGS"
+    }
+]

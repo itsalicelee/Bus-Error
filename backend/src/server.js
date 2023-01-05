@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import routes from './routes';
 import path from 'path';
+import { dataInit } from './tools';
 
 require('dotenv').config();
 
@@ -32,6 +33,11 @@ if (!process.env.MONGO_URL) {
     mongoose.connect(process.env.MONGO_URL, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
+    })
+    .then(async() => {
+        if (process.env.MODE === 'Reset') {
+            dataInit();
+        }
     });
 }
 
