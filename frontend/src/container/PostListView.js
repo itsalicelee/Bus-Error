@@ -51,6 +51,7 @@ function PostListView() {
     const [messageApi, contextHolder] = message.useMessage();
 
     const orders = ['newest', 'hottest', 'unsolved'];
+    const orderDisplayNames = ['最新', '熱門', '待解決'];
     const navigate = useNavigate();
 
     // Modal
@@ -97,6 +98,14 @@ function PostListView() {
                     } else {
                         setpostKeywordType('標籤');
                         setPostKeyword('全部');
+                    }
+                    return res.data.contents;
+                })
+                .then((res) => {
+                    if (res.mainTag) {
+                        document.title = `${postKeyword} 的${orderDisplayNames[params.order]}問題 (第 ${params.pageNum} 頁) - Bus Error`;
+                    } else {
+                        document.title = `${orderDisplayNames[params.order]}問題 (第 ${params.pageNum} 頁) - Bus Error`;
                     }
                 })
                 .catch((err) => {

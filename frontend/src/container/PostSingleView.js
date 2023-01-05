@@ -26,6 +26,7 @@ function PostListView() {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             })
             .then((res) => {
+                document.title = `${res.data.contents[0].post_title} - Bus Error`;
                 setPostData(res.data.contents[0]);
             });
     }, [postId]);
