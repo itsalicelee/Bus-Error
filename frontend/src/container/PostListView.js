@@ -99,14 +99,6 @@ function PostListView() {
                         setpostKeywordType('標籤');
                         setPostKeyword('全部');
                     }
-                    return res.data.contents;
-                })
-                .then((res) => {
-                    if (res.mainTag) {
-                        document.title = `${postKeyword} 的${orderDisplayNames[params.order]}問題 (第 ${params.pageNum} 頁) - Bus Error`;
-                    } else {
-                        document.title = `${orderDisplayNames[params.order]}問題 (第 ${params.pageNum} 頁) - Bus Error`;
-                    }
                 })
                 .catch((err) => {
                     switch (err.response.data.error) {
@@ -122,6 +114,14 @@ function PostListView() {
                 });
         }
     }, [params, reloadFlipFlop]);
+
+    useEffect(() => {
+        if (postKeyword !== '全部') {
+            document.title = `${postKeyword} 的${orderDisplayNames[params.order]}問題 (第 ${params.pageNum} 頁) - Bus Error`;
+        } else {
+            document.title = `${orderDisplayNames[params.order] ?? '最新'}問題 (第 ${params.pageNum ?? 1} 頁) - Bus Error`;
+        }
+    }, [postKeyword, params]);
 
     useEffect(() => {
         setPostData((
