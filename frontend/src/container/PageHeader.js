@@ -68,7 +68,6 @@ function PageHeader(props) {
                     <img src={darkMode ? BusErrorLogoDark : BusErrorLogoLight} alt="Bus Error" style={{ display: 'block' }} />
                 </Link>
             </HeaderHomeContainer>
-            <Input placeholder="搜尋" style={{ maxWidth: 500, flex: 1 }} />
             <Container>
                 <ThemeChangeButton onClick={onThemeChange} type="text" shape="circle" style={{ color: token.colorTextTertiary }}>
                     <span className="material-symbols-outlined">{ darkMode ? 'light_mode' : 'dark_mode' }</span>
