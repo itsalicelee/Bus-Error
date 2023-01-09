@@ -1,8 +1,7 @@
 # Bus Error - Taiwanese Technical Forum 🚌
 
 
-![Screen Shot 2023-01-10 at 12 07 53 AM](https://user-images.githubusercontent.com/105915352/211353705-b0653fff-5941-4662-9c71-9b8cbe93c79a.png)
-
+<img width="1438" alt="Screen Shot 2023-01-10 at 12 09 37 AM" src="https://user-images.githubusercontent.com/105915352/211354092-ad149226-d71d-4739-81ad-de99aab8e6d8.png">
 
 - We have created a forum for software developers to communicate. On this website, users can:
 
@@ -19,16 +18,16 @@
 - **User:**
     - Google OAuth2.0 login
     - Update personal name
-    - User information statistics (days in community/number of posts/number of comments/number of adopted comments)
+    - User information statistics (days in community / number of posts/number of comments / number of adopted comments)
 - **Articles:**
     - List all articles and filter articles by topic
-    - Display total rating/number of comments/number of views for each article
+    - Display total rating / number of comments/number of views for each article
     - Sort articles by newest/most popular/unresolved
     - Support Markdown syntax for adding articles and preview before publishing
-    - Delete and upvote/downvote articles
+    - Delete and upvote / downvote articles
 - **Comments:**
     - Upvote/downvote comments
-    - Sort by highest rating/newest
+    - Sort by highest rating / created time
     - Support Markdown syntax for adding comments and preview before publishing
     - Authors of articles can adopt comments
 - **Interface:**
@@ -36,12 +35,12 @@
 
 ### 🚌 Frameworks / Modules / Source Code / Third-Party Packages Used and Referenced
 
-- **Front-End:**
+- **Frontend:**
     - React.js, antd, Axios, FortAwesome, PropTypes
     - Date formatting and calculations: Day.js
     - Article display: React-Markdown (also used with KaTeX, remark-gfm, rehype-katex, remark-math)
     - Code linting: ESLint
-- **Back-End:**
+- **Backend:**
     - Node.js, Express, cors
     - Authentication: Google Auth Library, JsonWebToken
 - **Database:**
