@@ -1,5 +1,9 @@
 # Bus Error - Taiwanese Technical Forum 🚌
 
+
+![Screen Shot 2023-01-10 at 12 07 53 AM](https://user-images.githubusercontent.com/105915352/211353705-b0653fff-5941-4662-9c71-9b8cbe93c79a.png)
+
+
 - We have created a forum for software developers to communicate. On this website, users can:
 
     ****Ask freely**** - Stuck with a problem? Why not ask your community partners for help and find a solution together.
